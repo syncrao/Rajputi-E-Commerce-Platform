@@ -1,37 +1,48 @@
-
+# Python cache & compiled files
 __pycache__/
 *.py[cod]
 *$py.class
 
-
-
+# Virtual environment
 env/
+venv/
 
-
+# Logs
 *.log
+
+# Translations
 *.pot
-*.pyc
-*.pyo
 *.mo
-*.db
+
+# SQLite database (local only)
 db.sqlite3
+
+# Media uploads (don’t track user uploads in git)
 media/
+
+# Django static files
+# ❌ Don’t commit collected staticfiles (will be built on Vercel)
 staticfiles/
 static/
 
-
+# Environment variables
 .env
 
-
+# IDE & editor settings
 .vscode/
 .idea/
 *.swp
 
+# OS generated files
 .DS_Store
 Thumbs.db
 
-
+# Testing / Coverage
 .coverage
 htmlcov/
 .tox/
 pytest_cache/
+
+# Vercel
+# ✅ Keep .vercel folder so project stays linked
+# .vercel   <-- removed from ignore

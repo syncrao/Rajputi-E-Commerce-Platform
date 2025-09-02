@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.utils import timezone
 import datetime
@@ -10,7 +11,7 @@ class CustomUser(AbstractUser):
     is_phone_verified = models.BooleanField(default=False)
     google_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     google_pic = models.URLField(null=True, blank=True)
-    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
+    profile_pic = CloudinaryField("image", null=True, blank=True)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email", "phone"]

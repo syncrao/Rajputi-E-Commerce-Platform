@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, RegisterSerializer, OTPVerifySerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
 from .utils import IsSelfOrAdmin, get_user_by_identifier
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -73,7 +74,8 @@ class GoogleLoginView(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer   
+    serializer_class = UserSerializer  
+    parser_classes = [MultiPartParser, FormParser] 
 
     def get_permissions(self):
         if self.action == "list":

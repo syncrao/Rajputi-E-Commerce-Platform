@@ -44,6 +44,7 @@ class OTPVerifySerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_pic = serializers.ImageField(max_length=None, use_url=True, required=False)
     class Meta:
         model = User
         fields = ["id", "username", "email", "phone", "first_name", "last_name", "is_email_verified", "is_phone_verified"]
