@@ -60,7 +60,7 @@ export default function RegisterScreen() {
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/user/register/",
+        "https://raoecom.vercel.app/user/register/",
         formData
       );
       setMessage(res.data.message);
