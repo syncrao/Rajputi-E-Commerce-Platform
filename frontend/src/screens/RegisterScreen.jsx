@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { Link } from "react-router-dom";
 
 export default function RegisterScreen() {
   const [formData, setFormData] = useState({
@@ -60,7 +61,7 @@ export default function RegisterScreen() {
 
     try {
       const res = await axios.post(
-        "https://raoecom.vercel.app/user/register/",
+        "http://127.0.0.1:8000/user/register/",
         formData
       );
       setMessage(res.data.message);
@@ -311,12 +312,12 @@ export default function RegisterScreen() {
         {/* Already have account */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="login"
             className="font-semibold text-indigo-600 hover:underline"
           >
             Login
-          </a>
+          </Link>
         </p>
 
         {message && (
