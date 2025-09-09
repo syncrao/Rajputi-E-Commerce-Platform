@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 import datetime
 
+
 class CustomUser(AbstractUser):
     email = models.EmailField(max_length=50, unique=True, null=True, blank=True)
     phone = models.CharField(max_length=13, unique=True, null=True, blank=True)
