@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogBackdrop,
@@ -268,12 +269,13 @@ export default function Navbar() {
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                <a
-                  href="#"
+                <Link 
+                  to="register"
+                  onClick={() => setOpen(false)} 
                   className="-m-2 block p-2 font-medium text-gray-900"
                 >
                   Sign in
-                </a>
+                </Link>
               </div>
               <div className="flow-root">
                 <a
@@ -312,14 +314,14 @@ export default function Navbar() {
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="#">
+                <Link to="/">
                   <span className="sr-only">Your Company</span>
                   <img
-                    alt=""
+                    alt="Logo"
                     src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
                     className="h-8 w-auto"
                   />
-                </a>
+                </Link>
               </div>
 
               {/* Flyout menus */}
@@ -423,12 +425,12 @@ export default function Navbar() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a
-                    href="#"
+                  <Link
+                    to="register"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
                     Sign in
-                  </a>
+                  </Link>
                 
                 </div>
 
