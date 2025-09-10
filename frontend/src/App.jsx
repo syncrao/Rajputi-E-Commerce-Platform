@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import HomeScreen from "./screens/HomeScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route index element={<HomeScreen />} />
         <Route path="register" element={<RegisterScreen />} />
         <Route path="login" element={<LoginScreen />} />
+        <Route path="profile" element={<ProfileScreen />} />
       </Route>
     </Routes>
   );

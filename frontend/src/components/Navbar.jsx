@@ -19,7 +19,9 @@ import {
   MagnifyingGlassIcon,
   ShoppingBagIcon,
   XMarkIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { useSelector } from "react-redux";
 
 const navigation = {
   categories: [
@@ -153,6 +155,11 @@ const navigation = {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState("dd")
+
+  const {loading, error, authTokens} = useSelector((state) => state.auth)
+
+
 
   return (
     <div className="bg-white">
@@ -269,9 +276,9 @@ export default function Navbar() {
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                <Link 
+                <Link
                   to="/login"
-                  onClick={() => setOpen(false)} 
+                  onClick={() => setOpen(false)}
                   className="-m-2 block p-2 font-medium text-gray-900"
                 >
                   Sign in
@@ -286,21 +293,19 @@ export default function Navbar() {
                 </Link>
               </div>
             </div>
-
-        
           </DialogPanel>
         </div>
       </Dialog>
-  <div className="border-b border-gray-200">
-      <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
-          Get free delivery on orders over ₹499
-        </p>
+      <div className="border-b border-gray-200">
+        <header className="relative bg-white">
+          <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+            Get free delivery on orders over ₹499
+          </p>
 
-        <nav
-          aria-label="Top"
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-        >
+          <nav
+            aria-label="Top"
+            className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+          >
             <div className="flex h-16 items-center">
               <button
                 type="button"
@@ -425,15 +430,23 @@ export default function Navbar() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <Link
-                    to="/login"
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                  >
-                    Sign in
-                  </Link>
-                
+                  {authTokens ? (
+                    <Link
+                      to="/profile"
+                      className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      <UserIcon className="size-6 text-gray-500" />
+                      <span>Profile</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Sign in
+                    </Link>
+                  )}
                 </div>
-
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
@@ -460,10 +473,9 @@ export default function Navbar() {
                   </a>
                 </div>
               </div>
-          
-          </div>
-        </nav>
-      </header>
+            </div>
+          </nav>
+        </header>
       </div>
     </div>
   );
