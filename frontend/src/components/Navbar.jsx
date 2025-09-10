@@ -276,6 +276,7 @@ export default function Navbar() {
               {authTokens ? (
                 <Link
                   to="/profile"
+                  onClick={() => setOpen(false)}
                   className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-800"
                 >
                   <UserIcon className="size-6 text-gray-500" />
@@ -295,6 +296,7 @@ export default function Navbar() {
                   <div className="flow-root">
                     <Link
                       to="/register"
+                      onClick={() => setOpen(false)}
                       className="-m-2 block p-2 font-medium text-gray-900"
                     >
                       Create account
