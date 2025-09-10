@@ -155,11 +155,9 @@ const navigation = {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState("dd")
+  const [user, setUser] = useState("dd");
 
-  const {loading, error, authTokens} = useSelector((state) => state.auth)
-
-
+  const { loading, error, authTokens } = useSelector((state) => state.auth);
 
   return (
     <div className="bg-white">
@@ -275,23 +273,35 @@ export default function Navbar() {
             </div>
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-              <div className="flow-root">
+              {authTokens ? (
                 <Link
-                  to="/login"
-                  onClick={() => setOpen(false)}
-                  className="-m-2 block p-2 font-medium text-gray-900"
+                  to="/profile"
+                  className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-800"
                 >
-                  Sign in
+                  <UserIcon className="size-6 text-gray-500" />
+                  <span>Profile</span>
                 </Link>
-              </div>
-              <div className="flow-root">
-                <Link
-                  to="/register"
-                  className="-m-2 block p-2 font-medium text-gray-900"
-                >
-                  Create account
-                </Link>
-              </div>
+              ) : (
+                <>
+                  <div className="flow-root">
+                    <Link
+                      to="/login"
+                      onClick={() => setOpen(false)}
+                      className="-m-2 block p-2 font-medium text-gray-900"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
+                  <div className="flow-root">
+                    <Link
+                      to="/register"
+                      className="-m-2 block p-2 font-medium text-gray-900"
+                    >
+                      Create account
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </DialogPanel>
         </div>
