@@ -14,6 +14,8 @@ export default function ProfileScreen() {
     if (authTokens?.access && !userInfo) {
       dispatch(getUser());
     }
+
+    console.log(userInfo)
   }, [dispatch, authTokens, userInfo]);
 
   const handleLogout = () => {
