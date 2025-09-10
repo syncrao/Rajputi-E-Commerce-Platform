@@ -1,6 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../slices/authSlice";
+export const API_URL = import.meta.env.VITE_API_URL
 
 export default function LoginScreen() {
   const [formData, setFormData] = useState({
@@ -8,8 +12,8 @@ export default function LoginScreen() {
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,62 +27,54 @@ export default function LoginScreen() {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = validateForm();
+
+     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    setLoading(true);
-    try {
-      const res = await axios.post(
-        "http://127.0.0.1:8000/user/login/",
-        formData
-      );
-      setMessage(res.data.message || "Login successful!");
-      console.log("error", res)
-      setFormData({ username: "", password: "" });
-      setErrors({});
-    } catch (err) {
-      const data = err.response?.data;
-      if (data && typeof data === "object") {
+    dispatch(loginUser(formData))
+      .unwrap()
+      .then((res) => {
+        toast.success("Login successful!");
+        setFormData({ username: "", password: "" });
+        setErrors({});
+      })
+      .catch((err) => {
+        toast.error(err.detail || "Login failed!");
+        console.log("error", err)
         const backendErrors = {};
-        for (let key in data) backendErrors[key] = data[key][0];
+        for (let key in err.data) backendErrors[key] = data[key][0];
         setErrors(backendErrors);
-        setMessage(data.detail || "");
-      } else {
-        setMessage(data.detail);
-      }
-
-    console.log("error", err.response)
-    } finally {
-      setLoading(false);
-    }
+      });
   };
+
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/google-login/", {
-        token: credentialResponse.credential,
+      const res = await axios.post(`${API_URL}/user/google/`, {
+        google_token: credentialResponse.credential,
       });
-      setMessage("Google login successful!");
+      toast.success("Google login successful!");
       console.log("User Data:", res.data);
     } catch (err) {
-      setMessage("Google login failed!");
+      toast.error("Google login failed!");
     }
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+    <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">
       <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
-            Login
+            Sign in
           </h2>
           <p className="mt-2 text-lg text-gray-600">
-            Log in with your email or phone number, or sign in with Google.
+            Sign-in with your email or phone number, or sign in with Google.
           </p>
         </div>
 
@@ -86,7 +82,6 @@ export default function LoginScreen() {
           onSubmit={handleSubmit}
           className="mx-auto mt-16 max-w-xl sm:mt-20 space-y-6"
         >
-          {/* Email or Phone */}
           <div>
             <label htmlFor="username" className="block text-sm font-semibold text-gray-900">
               Email or Phone
@@ -106,7 +101,6 @@ export default function LoginScreen() {
             )}
           </div>
 
-          {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-semibold text-gray-900">
               Password
@@ -126,7 +120,6 @@ export default function LoginScreen() {
             )}
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow ${
@@ -150,43 +143,36 @@ export default function LoginScreen() {
                     d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
                   ></path>
                 </svg>
-                Logging in...
+                Signing in...
               </div>
             ) : (
-              "Login"
+              "Sign in"
             )}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-4 text-gray-500 text-sm">OR</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* Google Sign-In */}
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setMessage("Google login failed!")}
+            onError={() => toast.error("Google login failed!")}
           />
         </div>
 
-        {/* Register Link */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <a
             href="/register"
             className="font-semibold text-indigo-600 hover:underline"
           >
-            Register
+            Create account
           </a>
         </p>
-
-        {message && (
-          <p className="mt-6 text-center text-sm text-gray-700">{message}</p>
-        )}
       </div>
     </GoogleOAuthProvider>
   );
