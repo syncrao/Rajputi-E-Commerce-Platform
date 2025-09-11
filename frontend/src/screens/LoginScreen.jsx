@@ -1,14 +1,13 @@
 import { useState } from "react";
-import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../slices/authSlice";
-export const API_URL = import.meta.env.VITE_API_URL
+import { loginUser, googleLogin } from "../slices/authSlice";
+import { Link } from "react-router-dom";
 
 export default function LoginScreen() {
   const [formData, setFormData] = useState({
-    username: "", 
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -27,11 +26,10 @@ export default function LoginScreen() {
     return newErrors;
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-     const newErrors = validateForm();
+    const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -46,23 +44,24 @@ export default function LoginScreen() {
       })
       .catch((err) => {
         toast.error(err.detail || "Login failed!");
-        console.log("error", err)
+        console.log("error", err);
         const backendErrors = {};
         for (let key in err.data) backendErrors[key] = data[key][0];
         setErrors(backendErrors);
       });
   };
 
-
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post(`${API_URL}/user/google/`, {
-        google_token: credentialResponse.credential,
-      });
+      const res = await dispatch(
+        googleLogin({ google_token: credentialResponse.credential })
+      ).unwrap();
+
       toast.success("Google login successful!");
-      console.log("User Data:", res.data);
+      console.log("Google login response:", res);
     } catch (err) {
       toast.error("Google login failed!");
+      console.error("Google login error:", err);
     }
   };
 
@@ -83,7 +82,10 @@ export default function LoginScreen() {
           className="mx-auto mt-16 max-w-xl sm:mt-20 space-y-6"
         >
           <div>
-            <label htmlFor="username" className="block text-sm font-semibold text-gray-900">
+            <label
+              htmlFor="username"
+              className="block text-sm font-semibold text-gray-900"
+            >
               Email or Phone
             </label>
             <input
@@ -93,7 +95,9 @@ export default function LoginScreen() {
               value={formData.username}
               onChange={handleChange}
               className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.username ? "border-red-500" : "border-gray-300 focus:border-indigo-600"
+                errors.username
+                  ? "border-red-500"
+                  : "border-gray-300 focus:border-indigo-600"
               }`}
             />
             {errors.username && (
@@ -102,7 +106,10 @@ export default function LoginScreen() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold text-gray-900"
+            >
               Password
             </label>
             <input
@@ -112,12 +119,23 @@ export default function LoginScreen() {
               value={formData.password}
               onChange={handleChange}
               className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300 focus:border-indigo-600"
+                errors.password
+                  ? "border-red-500"
+                  : "border-gray-300 focus:border-indigo-600"
               }`}
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
+
+            <div className="text-left mt-2">
+              <Link
+                to="/reset-password"
+                className="text-sm font-medium text-indigo-600 hover:underline"
+              >
+                Forgot password ?
+              </Link>
+            </div>
           </div>
 
           <button
@@ -136,7 +154,14 @@ export default function LoginScreen() {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"
@@ -165,7 +190,7 @@ export default function LoginScreen() {
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don't have an account ?{" "}
           <a
             href="/register"
             className="font-semibold text-indigo-600 hover:underline"

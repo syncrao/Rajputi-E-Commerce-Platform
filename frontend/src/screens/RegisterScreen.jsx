@@ -1,8 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
+import { useDispatch } from "react-redux";
+import { googleLogin } from "../slices/authSlice";
+
+
 
 export const API_URL = import.meta.env.VITE_API_URL
 
@@ -16,6 +20,9 @@ export default function RegisterScreen() {
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -72,10 +79,10 @@ export default function RegisterScreen() {
       setAgree(false);
       toast.success(res.data.message);
       setErrors({});
+      navigate("/verifyOTP", { state: { email: formData.email } });
     } catch (err) {
       console.log("error", err);
       const data = err.response?.data;
-
       if (data && typeof data === "object") {
         const backendErrors = {};
         for (let key in data) {
@@ -95,17 +102,20 @@ export default function RegisterScreen() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const res = await axios.post(`${API_URL}/api/google-login/`, {
-        token: credentialResponse.credential,
-      });
-      toast.success("Google login successful!");
-      console.log("User Data:", res.data);
-    } catch (err) {
-      toast.error("Google login failed!");
-    }
-  };
+const handleGoogleSuccess = async (credentialResponse) => {
+  try {
+    const res = await dispatch(
+      googleLogin({ google_token: credentialResponse.credential })
+    ).unwrap();
+
+    toast.success("Google login successful!");
+    console.log("Google login response:", res);
+  } catch (err) {
+    toast.error("Google login failed!");
+    console.error("Google login error:", err);
+  }
+};
+
 
   return (
     <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">

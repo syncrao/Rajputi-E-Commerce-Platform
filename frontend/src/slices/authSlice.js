@@ -27,6 +27,20 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async ({ google_token }, { rejectWithValue }) => {
+    try {
+     const res = await axios.post(`${API_URL}/user/google/`, {
+        google_token
+      });
+      return res.data; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { detail: "Login failed" });
+    }
+  }
+);
+
 export const getUser = createAsyncThunk(
   "auth/getUser",
   async (_, { getState, rejectWithValue }) => {
@@ -92,6 +106,20 @@ const authSlice = createSlice({
         localStorage.setItem("userInfo", JSON.stringify(action.payload));
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch user";
+      })
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.authTokens = action.payload
+        state.userInfo = action.payload.user;
+        localStorage.setItem("userInfo", JSON.stringify(action.payload));
+        localStorage.setItem("authToken", JSON.stringify(action.payload));
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch user";
       });
