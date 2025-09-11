@@ -2,13 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { googleLogin } from "../slices/authSlice";
 
-
-
-export const API_URL = import.meta.env.VITE_API_URL
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RegisterScreen() {
   const [formData, setFormData] = useState({
@@ -25,27 +23,16 @@ export default function RegisterScreen() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFocus = (e) => {
-    setErrors({
-      ...errors,
-      [e.target.name]: "",
-    });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleCheckbox = (e) => {
     setAgree(e.target.checked);
-    if (e.target.checked) {
-      setErrors({
-        ...errors,
-        agree: "",
-      });
-    }
+    if (e.target.checked) setErrors({ ...errors, agree: "" });
   };
 
   const validateForm = () => {
@@ -67,33 +54,20 @@ export default function RegisterScreen() {
     }
 
     setLoading(true);
-
-    
-
     try {
-      const res = await axios.post(
-        `${API_URL}/user/register/`,
-        formData
-      );
+      const res = await axios.post(`${API_URL}/user/register/`, formData);
       setFormData({ username: "", email: "", phone: "", password: "" });
       setAgree(false);
-      toast.success(res.data.message);
       setErrors({});
+      toast.success(res.data.message);
       navigate("/verifyOTP", { state: { email: formData.email } });
     } catch (err) {
-      console.log("error", err);
       const data = err.response?.data;
       if (data && typeof data === "object") {
         const backendErrors = {};
-        for (let key in data) {
-          backendErrors[key] = data[key][0]; 
-        }
+        for (let key in data) backendErrors[key] = data[key][0];
         setErrors(backendErrors);
-
-      if (data.detail) {
-        toast.success(data.detail);
-      }
-
+        if (data.detail) toast.success(data.detail);
       } else {
         toast.error(data?.detail || "Something went wrong");
       }
@@ -102,136 +76,61 @@ export default function RegisterScreen() {
     }
   };
 
-const handleGoogleSuccess = async (credentialResponse) => {
-  try {
-    const res = await dispatch(
-      googleLogin({ google_token: credentialResponse.credential })
-    ).unwrap();
-
-    toast.success("Google login successful!");
-    console.log("Google login response:", res);
-  } catch (err) {
-    toast.error("Google login failed!");
-    console.error("Google login error:", err);
-  }
-};
-
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await dispatch(
+        googleLogin({ google_token: credentialResponse.credential })
+      ).unwrap();
+      toast.success("Google login successful!");
+      console.log("Google login response:", res);
+    } catch (err) {
+      toast.error("Google login failed!");
+      console.error("Google login error:", err);
+    }
+  };
 
   return (
     <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+      <div className="min-h-screen bg-rajputi-ivory flex flex-col items-center justify-center px-6 py-12 sm:py-24 lg:px-8">
+        <div className="max-w-2xl w-full text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-rajputi-green">
             Create Account
           </h2>
-          <p className="mt-2 text-lg text-gray-600">
+          <p className="mt-2 text-lg text-rajputi-brown">
             Register with your email and phone number, or sign in with Google.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="mx-auto mt-16 max-w-xl sm:mt-20 space-y-6"
+          className="mt-10 w-full max-w-xl space-y-6 bg-white p-8 rounded-2xl shadow-lg"
         >
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-semibold text-gray-900"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.username
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
-              }`}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-gray-900"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.email
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
-              }`}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-semibold text-gray-900"
-            >
-              Phone
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="text"
-              value={formData.phone}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.phone
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
-              }`}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-semibold text-gray-900"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
-                errors.password
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
-              }`}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
+          {["username", "email", "phone", "password"].map((field) => (
+            <div key={field}>
+              <label
+                htmlFor={field}
+                className="block text-sm font-semibold text-rajputi-green"
+              >
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+              </label>
+              <input
+                id={field}
+                name={field}
+                type={field === "password" ? "password" : "text"}
+                value={formData[field]}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-gray-900 placeholder-gray-400 focus:outline-none ${
+                  errors[field]
+                    ? "border-red-500"
+                    : "border-gray-300 focus:border-rajputi-pink"
+                }`}
+              />
+              {errors[field] && (
+                <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+              )}
+            </div>
+          ))}
 
           <div className="flex items-center gap-3">
             <input
@@ -240,22 +139,22 @@ const handleGoogleSuccess = async (credentialResponse) => {
               type="checkbox"
               checked={agree}
               onChange={handleCheckbox}
-              className={`h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 ${
+              className={`h-4 w-4 rounded border-gray-300 text-rajputi-pink focus:ring-rajputi-pink ${
                 errors.agree ? "border-red-500" : ""
               }`}
             />
-            <label htmlFor="agree" className="text-sm text-gray-600">
+            <label htmlFor="agree" className="text-sm text-rajputi-brown">
               I agree to the{" "}
               <a
                 href="/privacy-policy"
-                className="font-semibold text-indigo-600 hover:underline"
+                className="font-semibold text-rajputi-green hover:underline"
               >
                 Privacy Policy
               </a>{" "}
               and{" "}
               <a
                 href="/terms"
-                className="font-semibold text-indigo-600 hover:underline"
+                className="font-semibold text-rajputi-green hover:underline"
               >
                 Terms & Conditions
               </a>
@@ -268,12 +167,11 @@ const handleGoogleSuccess = async (credentialResponse) => {
 
           <button
             type="submit"
-            className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow 
-          ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-indigo-600"
-          }`}
+            className={`w-full py-3 rounded-xl text-white font-semibold shadow-lg transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+            }`}
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">
@@ -300,29 +198,29 @@ const handleGoogleSuccess = async (credentialResponse) => {
                 Creating...
               </div>
             ) : (
-              "Create"
+              "Create Account"
             )}
           </button>
         </form>
 
-        <div className="flex items-center my-6">
+        <div className="flex items-center my-6 w-full max-w-xl">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-4 text-gray-500 text-sm">OR</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-6 w-full max-w-xl">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => toast.error("Google login failed!")}
           />
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="text-sm text-rajputi-brown">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-semibold text-indigo-600 hover:underline"
+            className="font-semibold text-rajputi-green hover:underline"
           >
             Sign in
           </Link>

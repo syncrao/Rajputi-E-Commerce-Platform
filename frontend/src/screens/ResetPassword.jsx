@@ -23,16 +23,12 @@ export default function ResetPassword() {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // ✅ Handle OTP input
   const handleOtpChange = (value, index) => {
     if (/^[0-9]?$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
-      }
+      if (value && index < 5) inputRefs.current[index + 1].focus();
     }
   };
 
@@ -42,7 +38,6 @@ export default function ResetPassword() {
     }
   };
 
-  // ✅ Send OTP
   const sendOtp = async (e) => {
     e.preventDefault();
     if (!formData.identifier) {
@@ -63,19 +58,15 @@ export default function ResetPassword() {
     }
   };
 
-  // ✅ Reset password
   const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
-
     const finalOtp = otp.join("");
 
     if (finalOtp.length !== 6) newErrors.otp = "Enter 6-digit OTP";
     if (!formData.new_password) newErrors.new_password = "Password is required";
-    if (formData.new_password.length < 6)
-      newErrors.new_password = "Password must be at least 6 characters";
-    if (formData.new_password !== formData.confirm_password)
-      newErrors.confirm_password = "Passwords do not match";
+    if (formData.new_password.length < 6) newErrors.new_password = "Password must be at least 6 characters";
+    if (formData.new_password !== formData.confirm_password) newErrors.confirm_password = "Passwords do not match";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -104,123 +95,107 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow">
-      <h2 className="text-2xl font-semibold text-gray-900 text-center mb-4">
-        Reset Password
-      </h2>
+    <div className="min-h-screen bg-rajputi-ivory flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold text-rajputi-green text-center mb-6">
+          Reset Password
+        </h2>
 
-      {step === 1 && (
-        <form onSubmit={sendOtp} className="space-y-5">
-          <p className="text-gray-600 text-center mb-6">
-            Enter your email to receive OTP.
-          </p>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              name="identifier"
-              value={formData.identifier}
-              onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                errors.identifier ? "border-red-500" : "border-gray-300 focus:border-indigo-600"
-              }`}
-            />
-            {errors.identifier && (
-              <p className="text-red-500 text-sm">{errors.identifier}</p>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full rounded-md px-3.5 py-2.5 text-white font-semibold shadow ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-500 focus:outline-indigo-600"
-            }`}
-          >
-            {loading ? "Sending..." : "Send OTP"}
-          </button>
-        </form>
-      )}
+        {step === 1 && (
+          <form onSubmit={sendOtp} className="space-y-5">
+            <p className="text-gray-600 text-center mb-4">
+              Enter your email to receive OTP.
+            </p>
 
-      {step === 2 && (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <p className="text-gray-600 text-center mb-6">
-            Enter OTP and your new password.
-          </p>
-
-          {/* OTP */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">OTP Code</label>
-            <div className="flex justify-center gap-3 mt-2 mb-2">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  type="text"
-                  maxLength="1"
-                  value={digit}
-                  onChange={(e) => handleOtpChange(e.target.value, index)}
-                  onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                  className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600"
-                />
-              ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                name="identifier"
+                value={formData.identifier}
+                onChange={handleChange}
+                className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
+                  errors.identifier ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                }`}
+              />
+              {errors.identifier && <p className="text-red-500 text-sm mt-1">{errors.identifier}</p>}
             </div>
-            {errors.otp && <p className="text-red-500 text-sm">{errors.otp}</p>}
-          </div>
 
-          {/* New Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">New Password</label>
-            <input
-              type="password"
-              name="new_password"
-              value={formData.new_password}
-              onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                errors.new_password ? "border-red-500" : "border-gray-300 focus:border-indigo-600"
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2.5 rounded-xl text-white font-semibold shadow ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
               }`}
-            />
-            {errors.new_password && (
-              <p className="text-red-500 text-sm">{errors.new_password}</p>
-            )}
-          </div>
+            >
+              {loading ? "Sending..." : "Send OTP"}
+            </button>
+          </form>
+        )}
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirm_password"
-              value={formData.confirm_password}
-              onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                errors.confirm_password
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
+        {step === 2 && (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <p className="text-gray-600 text-center mb-4">Enter OTP and your new password.</p>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">OTP Code</label>
+              <div className="flex justify-center gap-3 mt-2 mb-2">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    maxLength="1"
+                    value={digit}
+                    onChange={(e) => handleOtpChange(e.target.value, index)}
+                    onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                    className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-rajputi-pink"
+                  />
+                ))}
+              </div>
+              {errors.otp && <p className="text-red-500 text-sm">{errors.otp}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">New Password</label>
+              <input
+                type="password"
+                name="new_password"
+                value={formData.new_password}
+                onChange={handleChange}
+                className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
+                  errors.new_password ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                }`}
+              />
+              {errors.new_password && <p className="text-red-500 text-sm mt-1">{errors.new_password}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <input
+                type="password"
+                name="confirm_password"
+                value={formData.confirm_password}
+                onChange={handleChange}
+                className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
+                  errors.confirm_password ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                }`}
+              />
+              {errors.confirm_password && <p className="text-red-500 text-sm mt-1">{errors.confirm_password}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2.5 rounded-xl text-white font-semibold shadow ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
               }`}
-            />
-            {errors.confirm_password && (
-              <p className="text-red-500 text-sm">{errors.confirm_password}</p>
-            )}
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full rounded-md px-3.5 py-2.5 text-white font-semibold shadow ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-500 focus:outline-indigo-600"
-            }`}
-          >
-            {loading ? "Resetting..." : "Reset Password"}
-          </button>
-        </form>
-      )}
+            >
+              {loading ? "Resetting..." : "Reset Password"}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }

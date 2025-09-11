@@ -3,21 +3,19 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export const API_URL = import.meta.env.VITE_API_URL
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputRefs = useRef([]);
-
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const email = location.state?.email
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
 
   useEffect(() => {
     const sendOtp = async () => {
       try {
-        await axios.post(`${API_URL}/user/send_otp/`, { email }); 
+        await axios.post(`${API_URL}/user/send_otp/`, { email });
         toast.success(`OTP sent to ${email}`);
       } catch (error) {
         toast.error("Failed to send OTP");
@@ -27,16 +25,13 @@ export default function VerifyOTP() {
     sendOtp();
   }, [email]);
 
-
   const handleChange = (value, index) => {
     if (/^[0-9]?$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
-      }
+      if (value && index < 5) inputRefs.current[index + 1].focus();
     }
   };
 
@@ -46,7 +41,6 @@ export default function VerifyOTP() {
     }
   };
 
-
   const handleVerify = async () => {
     const finalOtp = otp.join("");
     if (finalOtp.length !== 6) {
@@ -55,45 +49,47 @@ export default function VerifyOTP() {
     }
 
     try {
-      await axios.post(`${API_URL}/user/verify_otp/`, { email, code: finalOtp }); 
+      await axios.post(`${API_URL}/user/verify_otp/`, { email, code: finalOtp });
       toast.success("OTP verified successfully!");
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
-      toast.error("Invalid OTP")
+      toast.error("Invalid OTP");
       console.error(error);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow">
-      <h2 className="text-2xl font-semibold text-gray-900 text-center mb-4">
-        Verify OTP
-      </h2>
-      <p className="text-gray-600 text-center mb-6">
-        Enter the 6-digit code sent to <b>{email}</b>
-      </p>
+    <div className="min-h-screen bg-rajputi-ivory flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold text-rajputi-green text-center mb-4">
+          Verify OTP
+        </h2>
+        <p className="text-gray-600 text-center mb-6">
+          Enter the 6-digit code sent to <b>{email}</b>
+        </p>
 
-      <div className="flex justify-center gap-3 mb-6">
-        {otp.map((digit, index) => (
-          <input
-            key={index}
-            ref={(el) => (inputRefs.current[index] = el)}
-            type="text"
-            maxLength="1"
-            value={digit}
-            onChange={(e) => handleChange(e.target.value, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-            className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600"
-          />
-        ))}
+        <div className="flex justify-center gap-3 mb-6">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => (inputRefs.current[index] = el)}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleChange(e.target.value, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-rajputi-pink transition"
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={handleVerify}
+          className="w-full py-2.5 rounded-xl bg-rajputi-pink text-white font-semibold shadow hover:bg-rajputi-orange focus:outline-rajputi-yellow transition"
+        >
+          Verify
+        </button>
       </div>
-
-      <button
-        onClick={handleVerify}
-        className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-500 transition"
-      >
-        Verify
-      </button>
     </div>
   );
 }

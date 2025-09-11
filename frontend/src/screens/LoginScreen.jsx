@@ -46,7 +46,7 @@ export default function LoginScreen() {
         toast.error(err.detail || "Login failed!");
         console.log("error", err);
         const backendErrors = {};
-        for (let key in err.data) backendErrors[key] = data[key][0];
+        for (let key in err.data) backendErrors[key] = err.data[key][0];
         setErrors(backendErrors);
       });
   };
@@ -67,12 +67,12 @@ export default function LoginScreen() {
 
   return (
     <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate bg-rajputi-ivory px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+          <h2 className="text-4xl font-semibold tracking-tight text-rajputi-green sm:text-5xl">
             Sign in
           </h2>
-          <p className="mt-2 text-lg text-gray-600">
+          <p className="mt-2 text-lg text-rajputi-brown">
             Sign-in with your email or phone number, or sign in with Google.
           </p>
         </div>
@@ -84,7 +84,7 @@ export default function LoginScreen() {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-semibold text-gray-900"
+              className="block text-sm font-semibold text-rajputi-green"
             >
               Email or Phone
             </label>
@@ -94,21 +94,21 @@ export default function LoginScreen() {
               type="text"
               value={formData.username}
               onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
+              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-rajputi-green placeholder:text-rajputi-brown focus:outline-none ${
                 errors.username
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
+                  ? "border-rajputi-pink"
+                  : "border-rajputi-brown focus:border-rajputi-pink"
               }`}
             />
             {errors.username && (
-              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+              <p className="text-rajputi-pink text-sm mt-1">{errors.username}</p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-semibold text-gray-900"
+              className="block text-sm font-semibold text-rajputi-green"
             >
               Password
             </label>
@@ -118,20 +118,20 @@ export default function LoginScreen() {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none ${
+              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-rajputi-green placeholder:text-rajputi-brown focus:outline-none ${
                 errors.password
-                  ? "border-red-500"
-                  : "border-gray-300 focus:border-indigo-600"
+                  ? "border-rajputi-pink"
+                  : "border-rajputi-brown focus:border-rajputi-pink"
               }`}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              <p className="text-rajputi-pink text-sm mt-1">{errors.password}</p>
             )}
 
             <div className="text-left mt-2">
               <Link
                 to="/reset-password"
-                className="text-sm font-medium text-indigo-600 hover:underline"
+                className="text-sm font-medium text-rajputi-pink hover:underline"
               >
                 Forgot password ?
               </Link>
@@ -140,11 +140,12 @@ export default function LoginScreen() {
 
           <button
             type="submit"
-            className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-indigo-600"
-            }`}
+            className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow 
+                       ${
+                         loading
+                           ? "bg-gray-400 text-rajputi-ivory cursor-not-allowed"
+                           : "bg-rajputi-pink text-rajputi-ivory hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+                       }`}
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">
@@ -177,9 +178,9 @@ export default function LoginScreen() {
         </form>
 
         <div className="flex items-center my-6">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="px-4 text-gray-500 text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-300"></div>
+          <div className="flex-grow border-t border-rajputi-brown"></div>
+          <span className="px-4 text-rajputi-brown text-sm">OR</span>
+          <div className="flex-grow border-t border-rajputi-brown"></div>
         </div>
 
         <div className="flex justify-center">
@@ -189,14 +190,14 @@ export default function LoginScreen() {
           />
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Don't have an account ?{" "}
-          <a
-            href="/register"
-            className="font-semibold text-indigo-600 hover:underline"
+        <p className="mt-6 text-center text-sm text-rajputi-brown">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-semibold text-rajputi-pink hover:underline"
           >
             Create account
-          </a>
+          </Link>
         </p>
       </div>
     </GoogleOAuthProvider>
