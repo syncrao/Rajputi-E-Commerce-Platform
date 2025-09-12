@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getProducts } from "../slices/productSlice"
 
 export default function HomeScreen() {
   const images = [
@@ -15,12 +17,20 @@ export default function HomeScreen() {
   ];
 
   const [current, setCurrent] = useState(0);
+  const dispatch = useDispatch()
+  const {products, loading, error} = useSelector((state) => state.products)
+
+  useEffect(() => {
+    dispatch(getProducts())
+  }, [dispatch])
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
     }, 3000);
     return () => clearInterval(timer);
+
+
   }, [images.length]);
 
   return (

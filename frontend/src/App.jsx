@@ -2,11 +2,16 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 
 import HomeScreen from "./screens/HomeScreen";
+
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import VerifyOTP from "./screens/VerifyOTP";
 import ResetPassword from "./screens/ResetPassword";
+
+import ProductsScreen from "./screens/ProductsScreen";
+import ProductScreen from "./screens/ProductScreen";
+
 
 export default function App() {
   return (
@@ -18,6 +23,9 @@ export default function App() {
         <Route path="profile" element={<ProfileScreen />} />
         <Route path="verifyOTP" element={<VerifyOTP />} />
         <Route path="reset-password" element={<ResetPassword />} />
+
+        <Route path="products" element={<ProductsScreen />} />
+        <Route path="product/:id" element={<ProductScreen />} />
       </Route>
     </Routes>
   );

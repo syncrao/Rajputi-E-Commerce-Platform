@@ -43,7 +43,7 @@ export default function LoginScreen() {
         setErrors({});
       })
       .catch((err) => {
-        toast.error(err.detail || "Login failed!");
+        toast.error(err || "Login failed!");
         console.log("error", err);
         const backendErrors = {};
         for (let key in err.data) backendErrors[key] = err.data[key][0];

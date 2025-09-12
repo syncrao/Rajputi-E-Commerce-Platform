@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-export const API_URL = import.meta.env.VITE_API_URL;
+import { postRequest, getRequest } from "../utils/request";
 
 const authTokens = localStorage.getItem("authToken")
   ? JSON.parse(localStorage.getItem("authToken"))
@@ -11,18 +9,14 @@ const userInfo = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ username, password }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/user/login/`, {
-        username,
-        password,
-      });
-      return res.data; 
+      return await postRequest(`user/login/`, { username, password });
     } catch (err) {
-      return rejectWithValue(err.response?.data || { detail: "Login failed" });
+      console.log(err, "djfkdjfk")
+      return rejectWithValue(err?.detail || { detail: "Login failed" });
     }
   }
 );
@@ -31,12 +25,9 @@ export const googleLogin = createAsyncThunk(
   "auth/googleLogin",
   async ({ google_token }, { rejectWithValue }) => {
     try {
-     const res = await axios.post(`${API_URL}/user/google/`, {
-        google_token
-      });
-      return res.data; 
+      return await postRequest(`user/google/`, { google_token });
     } catch (err) {
-      return rejectWithValue(err.response?.data || { detail: "Login failed" });
+      return rejectWithValue(err.detail || { detail: "Login failed" });
     }
   }
 );
@@ -44,7 +35,7 @@ export const googleLogin = createAsyncThunk(
 export const getUser = createAsyncThunk(
   "auth/getUser",
   async (_, { getState, rejectWithValue }) => {
-    console.log("req " )
+    console.log("req ");
     try {
       const { auth } = getState();
       const token = auth?.authTokens?.access;
@@ -53,15 +44,11 @@ export const getUser = createAsyncThunk(
         return rejectWithValue({ detail: "No access token found" });
       }
 
-      const res = await axios.get(`${API_URL}/user/me/`, {
-        headers: {
-          Authorization: `Bearer ${token}`, 
-        },
-      });
-    console.log("req " ,res)
-      return res.data; 
+      return await getRequest(`user/me/`, token);
     } catch (err) {
-      return rejectWithValue(err.response?.data || { detail: "Failed to fetch user" });
+      return rejectWithValue(
+        err.response?.data || { detail: "Failed to fetch user" }
+      );
     }
   }
 );
@@ -114,7 +101,7 @@ const authSlice = createSlice({
       })
       .addCase(googleLogin.fulfilled, (state, action) => {
         state.loading = false;
-        state.authTokens = action.payload
+        state.authTokens = action.payload;
         state.userInfo = action.payload.user;
         localStorage.setItem("userInfo", JSON.stringify(action.payload));
         localStorage.setItem("authToken", JSON.stringify(action.payload));
