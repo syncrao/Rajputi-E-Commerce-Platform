@@ -80,29 +80,33 @@ export default function HomeScreen() {
         </div>
       </div>
 
-      {/* Categories */}
-      <div className="px-6 py-12">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Shop by Category
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-          {categories.map((cat, i) => (
-            <div
-              key={i}
-              className="flex flex-col items-center bg-white p-6 rounded-lg shadow hover:shadow-lg transition"
-            >
-              <img
-                src={cat.img}
-                alt={cat.name}
-                className="w-28 h-28 rounded-full object-cover border-4 border-indigo-500"
-              />
-              <p className="mt-4 text-gray-800 font-medium text-lg">
-                {cat.name}
-              </p>
-            </div>
-          ))}
-        </div>
+     {/* Categories */}
+<div className="px-6 py-12">
+  <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    Shop by Category
+  </h2>
+
+  {/* Mobile: horizontal scroll | Desktop: centered grid */}
+  <div className="flex gap-6 overflow-x-auto sm:overflow-x-hidden sm:grid sm:grid-cols-4 sm:gap-8 justify-center px-2">
+    {categories.map((cat, i) => (
+      <div
+        key={i}
+        className="flex-shrink-0 sm:flex-shrink flex flex-col items-center bg-white p-6 rounded-lg shadow hover:shadow-lg transition w-40"
+      >
+        <img
+          src={cat.img}
+          alt={cat.name}
+          className="w-28 h-28 rounded-full object-cover border-4 border-indigo-500"
+        />
+        <p className="mt-4 text-gray-800 font-medium text-lg">
+          {cat.name}
+        </p>
       </div>
+    ))}
+  </div>
+</div>
+
+
     </div>
   );
 }

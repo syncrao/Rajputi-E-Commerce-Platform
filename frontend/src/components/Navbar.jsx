@@ -100,7 +100,7 @@ export default function Navbar() {
 
       <div className="border-b border-gray-200 w-full z-10 fixed top-0 left-0">
         <header className="relative bg-white">
-          <p className="flex h-6 items-center justify-center bg-black px-4 text-sm font-small text-white sm:px-6 lg:px-8">
+          <p className="flex h-6 items-center justify-center border-b bg-gray-100 px-4 text-sm font-small text-gray-600 sm:px-6 lg:px-8">
             Get free delivery on orders over ₹499
           </p>
 
