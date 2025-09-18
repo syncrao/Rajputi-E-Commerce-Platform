@@ -43,7 +43,7 @@ export default function ProductsScreen() {
               )}
 
               <img
-                src={mainImage}
+                src={mainImage?.replace("http://", "https://")}
                 alt={product.name}
                 className="w-full h-60 object-cover group-hover:scale-105 transition-transform"
               />

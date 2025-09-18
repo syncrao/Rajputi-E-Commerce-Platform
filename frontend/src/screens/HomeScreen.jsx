@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../slices/productSlice";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen() {
-  // Hero Images
   const desktopImages = [
     "/assets/hero/desktop1.jpg",
     "/assets/hero/desktop2.jpg",
@@ -23,7 +21,6 @@ export default function HomeScreen() {
     { name: "Odhna", img: "/assets/hero/mobile1.jpg" },
   ];
 
-  // Mock Data (4 products per section)
   const latestSuits = [
     {
       id: 1,
@@ -149,12 +146,10 @@ export default function HomeScreen() {
   ];
 
   const [current, setCurrent] = useState(0);
-  const dispatch = useDispatch();
+
   const { products, loading, error } = useSelector((state) => state.products);
 
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -163,11 +158,9 @@ export default function HomeScreen() {
     return () => clearInterval(timer);
   }, [desktopImages.length]);
 
-  // Helper to calculate discount %
   const getDiscount = (mrp, price) =>
     Math.round(((mrp - price) / mrp) * 100);
 
-  // Section Component
   const Section = ({ title, items }) => (
     <div className="px-6 py-10">
       <div className="flex justify-between items-center mb-6">
@@ -180,7 +173,6 @@ export default function HomeScreen() {
             key={item.id}
             className="rounded-lg transition  relative"
           >
-            {/* Discount Badge */}
             <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
               {getDiscount(item.mrp, item.price)}% OFF
             </span>
@@ -209,7 +201,6 @@ export default function HomeScreen() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Fullscreen Slider */}
       <div className="relative w-full h-screen overflow-hidden">
         {desktopImages.map((img, index) => (
           <img
@@ -242,8 +233,6 @@ export default function HomeScreen() {
           ))}
         </div>
       </div>
-
-      {/* Categories */}
       <div className="px-6 py-12">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Shop by Category
@@ -266,8 +255,6 @@ export default function HomeScreen() {
           ))}
         </div>
       </div>
-
-      {/* Product Sections */}
       <Section title="Latest Suits" items={latestSuits} />
       <Section title="Latest Odhna" items={latestOdhna} />
       <Section title="Latest Dupatta" items={latestDupatta} />

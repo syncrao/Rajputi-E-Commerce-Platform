@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {
@@ -9,8 +9,8 @@ import {
   UserIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getProducts } from "../slices/productSlice";
 
 const navigation = {
   pages: [{ name: "Products", href: "/products" }],
@@ -20,9 +20,12 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { authTokens } = useSelector((state) => state.auth);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    console.log("render... ")
-  }, []);
+    console.log("render... ");
+    dispatch(getProducts());
+  }, [dispatch]);
 
   return (
     <div className="bg-white">
