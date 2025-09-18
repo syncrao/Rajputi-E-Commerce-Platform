@@ -106,7 +106,7 @@ export default function Navbar() {
 
           <nav
             aria-label="Top"
-            className="transition-all duration-100 px-4 sm:px-6 lg:px-8  border-b"
+            className="transition-all duration-100 px-4 sm:px-6 lg:px-8"
           >
             <div className="flex h-14 items-center">
               <div className="flex items-center lg:hidden">

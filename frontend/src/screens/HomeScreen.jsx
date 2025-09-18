@@ -178,7 +178,7 @@ export default function HomeScreen() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-lg hover:shadow-md transition  relative"
+            className="rounded-lg hover:shadow-md transition  relative"
           >
             {/* Discount Badge */}
             <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
@@ -208,7 +208,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-200">
       {/* Fullscreen Slider */}
       <div className="relative w-full h-screen overflow-hidden">
         {desktopImages.map((img, index) => (
@@ -252,7 +252,7 @@ export default function HomeScreen() {
           {categories.map((cat, i) => (
             <div
               key={i}
-              className="flex flex-col items-center bg-white p-6 rounded-lg"
+              className="flex flex-col items-center p-6 rounded-lg"
             >
               <img
                 src={cat.img}
