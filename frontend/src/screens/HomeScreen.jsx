@@ -1,58 +1,78 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../slices/productSlice"
+import { getProducts } from "../slices/productSlice";
 
 export default function HomeScreen() {
-  const images = [
-    "https://saundaryamfashions.com/cdn/shop/files/1_e790972e-684b-4e99-8502-9b2c448061b7.jpg?v=1702719698&width=600",
-    "https://www.royalranisa.com/wp-content/uploads/2018/10/ASP_2583.jpg",
-    "https://www.royalranisa.com/wp-content/uploads/2018/10/ASP_2239.jpg",
+  // Desktop images from public/assets/hero
+  const desktopImages = [
+    "/assets/hero/desktop1.jpg",
+    "/assets/hero/desktop2.jpg",
+    "/assets/hero/desktop3.jpg",
+  ];
+
+  // Mobile images from public/assets/hero
+  const mobileImages = [
+    "/assets/hero/mobile1.jpg",
+    "/assets/hero/mobile2.jpg",
+    "/assets/hero/mobile3.jpg",
   ];
 
   const categories = [
-    { name: "Dupatta", img: "https://www.royalranisa.com/wp-content/uploads/2018/10/ASP_2239.jpg" },
-    { name: "Poshak", img: "https://www.royalranisa.com/wp-content/uploads/2018/10/ASP_2583.jpg" },
-    { name: "Suit", img: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS-0vlMTsAtY81AOUmBRhX7YDQ0Alboy6x4QKrXimyR_txRTPn0FZh9OGWu2cSBUWvh0TXK7IJv9sGa4G2YOR3yVyAdV0t_bc0h4SaDIcgqR9LIY11RXD8e" },
-    { name: "Odhna", img: "https://www.royalranisa.com/wp-content/uploads/2018/10/ASP_2239.jpg" },
+    { name: "Dupatta", img: "/assets/hero/desktop1.jpg" },
+    { name: "Poshak", img: "/assets/hero/desktop2.jpg" },
+    { name: "Suit", img: "/assets/hero/desktop3.jpg" },
+    { name: "Odhna", img: "/assets/hero/mobile1.jpg" },
   ];
 
   const [current, setCurrent] = useState(0);
-  const dispatch = useDispatch()
-  const {products, loading, error} = useSelector((state) => state.products)
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
 
   useEffect(() => {
-    dispatch(getProducts())
-  }, [dispatch])
+    dispatch(getProducts());
+  }, [dispatch]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
+      setCurrent((prev) => (prev + 1) % desktopImages.length);
     }, 3000);
     return () => clearInterval(timer);
-
-
-  }, [images.length]);
+  }, [desktopImages.length]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Fullscreen Slider */}
       <div className="relative w-full h-screen overflow-hidden">
-        {images.map((img, index) => (
+        {/* Desktop Images */}
+        {desktopImages.map((img, index) => (
           <img
             key={index}
             src={img}
             alt={`Slide ${index}`}
-            className={`absolute w-full h-full object-cover transition-opacity duration-700 ${
+            className={`hidden sm:block absolute w-full object-cover transition-opacity duration-700 ${
               index === current ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
+
+        {/* Mobile Images */}
+        {mobileImages.map((img, index) => (
+          <img
+            key={`m-${index}`}
+            src={img}
+            alt={`Mobile Slide ${index}`}
+            className={`block sm:hidden absolute w-full object-cover transition-opacity duration-700 ${
+              index === current ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+
         {/* Dots */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
-          {images.map((_, i) => (
+        <div className="absolute bottom-8 inset-x-0 flex justify-center gap-3">
+          {desktopImages.map((_, i) => (
             <span
               key={i}
-              className={`w-4 h-4 rounded-full ${
+              className={`w-3 h-3 rounded-full transition ${
                 i === current ? "bg-white" : "bg-gray-400"
               }`}
             ></span>
@@ -76,7 +96,9 @@ export default function HomeScreen() {
                 alt={cat.name}
                 className="w-28 h-28 rounded-full object-cover border-4 border-indigo-500"
               />
-              <p className="mt-4 text-gray-800 font-medium text-lg">{cat.name}</p>
+              <p className="mt-4 text-gray-800 font-medium text-lg">
+                {cat.name}
+              </p>
             </div>
           ))}
         </div>

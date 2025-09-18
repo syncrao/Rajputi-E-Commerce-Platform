@@ -1,19 +1,19 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 export default function Layout() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
   return (
-    <div className="bg-rajputi-ivory min-h-screen flex flex-col">
-      {/* Navbar */}
+    <div className=" min-h-screen flex flex-col">
       <Navbar />
-
-      {/* Page content */}
-      <main className="flex-1 min-h-[60vh] px-4 sm:px-6 lg:px-8 py-6">
-        <Outlet />
-      </main>
-
-      {/* Footer */}
+      <Outlet />
       <Footer />
     </div>
   );
