@@ -120,7 +120,7 @@ export default function HomeScreen() {
   const latestPoshak = [
     {
       id: 1,
-      name: "Bridal Heavy Embroidery Silk Poshak",
+      name: "Bridal Heavy Embroidery Silk Poshak iejfewi ijewijf ij ewjgijg  gwj iwejg jwei ejewig  ewifj ewigjg jewg",
       img: "/assets/hero/desktop2.jpg",
       mrp: 9999,
       price: 7499,
@@ -178,7 +178,7 @@ export default function HomeScreen() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="rounded-lg hover:shadow-md transition  relative"
+            className="rounded-lg transition  relative"
           >
             {/* Discount Badge */}
             <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
@@ -188,16 +188,16 @@ export default function HomeScreen() {
             <img
               src={item.img}
               alt={item.name}
-              className="w-full h-60 object-cover "
+              className="w-full h-60 object-cover"
             />
-            <h3 className="mt-3 text-gray-800 font-medium text-sm line-clamp-2">
+            <h3 className="mt-3 text-gray-700 font-medium text-sm line-clamp-2 hover:text-black">
               {item.name}
             </h3>
             <div className="mt-2 flex items-center gap-2">
               <span className="text-gray-500 line-through text-sm">
                 ₹{item.mrp}
               </span>
-              <span className="text-indigo-600 font-semibold">
+              <span className="text-black font-semibold">
                 ₹{item.price}
               </span>
             </div>
@@ -208,7 +208,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-200">
+    <div className="min-h-screen bg-white">
       {/* Fullscreen Slider */}
       <div className="relative w-full h-screen overflow-hidden">
         {desktopImages.map((img, index) => (
