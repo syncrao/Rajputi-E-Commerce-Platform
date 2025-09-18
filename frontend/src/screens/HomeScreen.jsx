@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function HomeScreen() {
   const desktopImages = [
@@ -165,7 +166,7 @@ export default function HomeScreen() {
     <div className="px-6 py-10">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-        <button className="text-indigo-600 hover:underline">See All</button>
+        <Link to="/products" className="text-indigo-600 hover:underline">See All</Link>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         {items.map((item) => (

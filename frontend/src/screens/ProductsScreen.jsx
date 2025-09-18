@@ -33,7 +33,7 @@ export default function ProductsScreen() {
             <Link
               key={product.id}
               to={`/product/${product.id}`}
-              className="rounded-lg transition relative group bg-white shadow-sm "
+              className="rounded-lg transition relative"
             >
               {/* Discount Badge */}
               {product.mrp && product.price < product.mrp && (
@@ -45,12 +45,12 @@ export default function ProductsScreen() {
               <img
                 src={mainImage?.replace("http://", "https://")}
                 alt={product.name}
-                className="w-full h-60 object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-60 object-cover hover:scale-105 transition-transform"
               />
-              <h3 className="mt-3 text-gray-700 font-medium text-sm line-clamp-2 px-2 hover:text-black">
+              <h3 className="mt-3 text-gray-700 font-medium text-sm line-clamp-2 hover:text-black">
                 {product.name}
               </h3>
-              <div className="mt-2 flex items-center gap-2 px-2 pb-3">
+              <div className="mt-2 flex items-center gap-2 pb-3">
                 {product.mrp && (
                   <span className="text-gray-500 line-through text-sm">
                     ₹{product.mrp}
