@@ -13,40 +13,50 @@ export default function ProductsScreen() {
     }
   }, [dispatch, products]);
 
+  const getDiscount = (mrp, price) => {
+    if (!mrp || mrp <= price) return 0;
+    return Math.round(((mrp - price) / mrp) * 100);
+  };
+
   if (loading) return <p className="text-center py-10">Loading products...</p>;
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Products</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="px-6 py-10 max-w-7xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         {products.map((product) => {
-          const mainImage = product.images.find((img) => img.is_main)?.image || product.images[0]?.image;
+          const mainImage =
+            product.images.find((img) => img.is_main)?.image ||
+            product.images[0]?.image;
 
           return (
             <Link
               key={product.id}
               to={`/product/${product.id}`}
-              className="group border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white"
+              className="rounded-lg transition relative group bg-white shadow-sm "
             >
+              {/* Discount Badge */}
+              {product.mrp && product.price < product.mrp && (
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                  {getDiscount(product.mrp, product.price)}% OFF
+                </span>
+              )}
+
               <img
                 src={mainImage}
                 alt={product.name}
-                className="w-full h-64 object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-60 object-cover group-hover:scale-105 transition-transform"
               />
-              <div className="p-3">
-                <h2 className="text-sm font-medium line-clamp-2">{product.name}</h2>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="font-semibold text-gray-900">₹{product.price}</span>
-                  {product.mrp && (
-                    <span className="line-through text-gray-500 text-sm">₹{product.mrp}</span>
-                  )}
-                  {product.discount_percentage > 0 && (
-                    <span className="text-green-600 text-sm font-semibold">
-                      {product.discount_percentage}% OFF
-                    </span>
-                  )}
-                </div>
+              <h3 className="mt-3 text-gray-700 font-medium text-sm line-clamp-2 px-2 hover:text-black">
+                {product.name}
+              </h3>
+              <div className="mt-2 flex items-center gap-2 px-2 pb-3">
+                {product.mrp && (
+                  <span className="text-gray-500 line-through text-sm">
+                    ₹{product.mrp}
+                  </span>
+                )}
+                <span className="text-black font-semibold">₹{product.price}</span>
               </div>
             </Link>
           );

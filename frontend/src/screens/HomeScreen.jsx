@@ -188,11 +188,11 @@ export default function HomeScreen() {
             <img
               src={item.img}
               alt={item.name}
-              className="w-full h-60 object-cover"
+              className="w-full h-60 object-cover hover:scale-105 lg:h-full transition-transform"
             />
             <h3 className="mt-3 text-gray-700 font-medium text-sm line-clamp-2 hover:text-black">
               {item.name}
-            </h3>
+            </h3> 
             <div className="mt-2 flex items-center gap-2">
               <span className="text-gray-500 line-through text-sm">
                 ₹{item.mrp}
