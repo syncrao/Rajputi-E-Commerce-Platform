@@ -178,7 +178,7 @@ export default function HomeScreen() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-lg shadow hover:shadow-md transition p-4 relative"
+            className="bg-white rounded-lg hover:shadow-md transition  relative"
           >
             {/* Discount Badge */}
             <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
@@ -188,7 +188,7 @@ export default function HomeScreen() {
             <img
               src={item.img}
               alt={item.name}
-              className="w-full h-48 object-cover rounded-md"
+              className="w-full h-60 object-cover "
             />
             <h3 className="mt-3 text-gray-800 font-medium text-sm line-clamp-2">
               {item.name}
