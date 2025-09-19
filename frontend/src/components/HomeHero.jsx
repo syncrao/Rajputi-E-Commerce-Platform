@@ -23,7 +23,7 @@ export default function HomeHero() {
   const [current, setCurrent] = useState(0);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-80 overflow-hidden">
       {desktopImages.map((img, index) => (
         <img
           key={index}

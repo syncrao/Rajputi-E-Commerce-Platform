@@ -22,7 +22,7 @@ export default function ProductsScreen() {
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
 
   return (
-    <div className="px-6 py-10 max-w-7xl mx-auto">
+    <div className="px-4 py-10 ">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         {loading
           ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
