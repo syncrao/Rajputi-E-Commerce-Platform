@@ -35,7 +35,6 @@ export default function ProductsScreen() {
               to={`/product/${product.id}`}
               className="rounded-lg transition relative"
             >
-              {/* Discount Badge */}
               {product.mrp && product.price < product.mrp && (
                 <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
                   {getDiscount(product.mrp, product.price)}% OFF
