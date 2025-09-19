@@ -12,8 +12,8 @@ export default function HomeScreen() {
     <div className="min-h-screen bg-white">
       <HomeHero/>
       <HomeCategory/>
-      <HomeSection title="Latest Suits" items={suits} />
-      <HomeSection title="Latest Lehenga" items={lehenga} />
+      <HomeSection title="Latest Suits" items={suits} loading={loading} />
+      <HomeSection title="Latest Lehenga" items={lehenga} loading={loading} />
     </div>
   );
 }

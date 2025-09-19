@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
+import { SkeletonCard } from "../components/HomeSection";
 
 export default function ProductsScreen() {
   const dispatch = useDispatch();
@@ -18,8 +19,20 @@ export default function ProductsScreen() {
     return Math.round(((mrp - price) / mrp) * 100);
   };
 
-  if (loading) return <p className="text-center py-10">Loading products...</p>;
-  if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
+  if (loading) {
+    return (
+      <div className="px-6 py-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error)
+    return <p className="text-center text-red-500 py-10">{error}</p>;
 
   return (
     <div className="px-6 py-10 max-w-7xl mx-auto">
@@ -55,7 +68,9 @@ export default function ProductsScreen() {
                     ₹{product.mrp}
                   </span>
                 )}
-                <span className="text-black font-semibold">₹{product.price}</span>
+                <span className="text-black font-semibold">
+                  ₹{product.price}
+                </span>
               </div>
             </Link>
           );
