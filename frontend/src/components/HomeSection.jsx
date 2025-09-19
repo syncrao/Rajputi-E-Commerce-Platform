@@ -21,7 +21,7 @@ export default function HomeSection({ title, items, loading }) {
   const getDiscount = (mrp, price) => Math.round(((mrp - price) / mrp) * 100);
 
   return (
-    <div className="px-6">
+    <div className="px-6 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
         <Link to="/products" className="text-indigo-600 hover:underline">
