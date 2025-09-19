@@ -13,6 +13,8 @@ export default function HomeHero() {
     "/assets/hero/mobile3.jpg",
   ];
 
+  const [current, setCurrent] = useState(0);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % desktopImages.length);
@@ -20,31 +22,32 @@ export default function HomeHero() {
     return () => clearInterval(timer);
   }, [desktopImages.length]);
 
-  const [current, setCurrent] = useState(0);
-
   return (
-    <div className="relative w-full h-80 overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {desktopImages.map((img, index) => (
         <img
           key={index}
           src={img}
           alt={`Slide ${index}`}
-          className={`hidden sm:block absolute w-full h-full object-cover transition-opacity duration-700 ${
-            index === current ? "opacity-100" : "opacity-0"
+          className={`hidden sm:block w-full transition-opacity duration-700 ${
+            index === current ? "opacity-100" : "opacity-0 absolute inset-0"
           }`}
         />
       ))}
+
       {mobileImages.map((img, index) => (
         <img
           key={`m-${index}`}
           src={img}
           alt={`Mobile Slide ${index}`}
-          className={`block sm:hidden absolute w-full h-full object-cover transition-opacity duration-700 ${
-            index === current ? "opacity-100" : "opacity-0"
+          className={`block sm:hidden w-full transition-opacity duration-700 ${
+            index === current ? "opacity-100" : "opacity-0 absolute inset-0"
           }`}
         />
       ))}
-      <div className="absolute bottom-8 inset-x-0 flex justify-center gap-3">
+
+      {/* Dots */}
+      <div className="absolute bottom-4 inset-x-0 flex justify-center gap-3">
         {desktopImages.map((_, i) => (
           <span
             key={i}
