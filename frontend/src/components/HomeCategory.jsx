@@ -7,7 +7,7 @@ export default function HomeCategory() {
   ];
 
   return (
-    <div className="px-6 py-12">
+    <div className="px-4 py-12">
       <div className="grid grid-cols-4 sm:grid-cols-4 gap-2">
         {categories.map((cat, i) => (
           <div key={i} className="flex flex-col items-center rounded-lg">
@@ -16,7 +16,7 @@ export default function HomeCategory() {
               alt={cat.name}
               className="w-20 h-20 lg:w-28 lg:h-28 rounded-full object-cover"
             />
-            <p className="mt-4 text-gray-800 font-medium text-lg">{cat.name}</p>
+            <p className="mt-2 text-gray-800 font-medium text-lg">{cat.name}</p>
           </div>
         ))}
       </div>
