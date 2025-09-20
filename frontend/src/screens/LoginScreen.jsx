@@ -41,6 +41,7 @@ export default function LoginScreen() {
       .unwrap()
       .then((res) => {
         toast.success("Login successful!");
+        navigate("/")
         setFormData({ username: "", password: "" });
         setErrors({});
       })
