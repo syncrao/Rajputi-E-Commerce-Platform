@@ -82,7 +82,7 @@ export default function RegisterScreen() {
         googleLogin({ google_token: credentialResponse.credential })
       ).unwrap();
       toast.success("Google login successful!");
-      console.log("Google login response:", res);
+      navigate("/")
     } catch (err) {
       toast.error("Google login failed!");
       console.error("Google login error:", err);

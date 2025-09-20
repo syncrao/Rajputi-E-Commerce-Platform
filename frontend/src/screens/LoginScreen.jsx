@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, googleLogin } from "../slices/authSlice";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginScreen() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function LoginScreen() {
   const [errors, setErrors] = useState({});
   const { loading, error } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -58,7 +60,7 @@ export default function LoginScreen() {
       ).unwrap();
 
       toast.success("Google login successful!");
-      console.log("Google login response:", res);
+      navigate("/")
     } catch (err) {
       toast.error("Google login failed!");
       console.error("Google login error:", err);
@@ -67,12 +69,12 @@ export default function LoginScreen() {
 
   return (
     <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">
-      <div className="isolate bg-rajputi-ivory px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate px-6 py-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-rajputi-green sm:text-5xl">
+          <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             Sign in
-          </h2>
-          <p className="mt-2 text-lg text-rajputi-brown">
+          </h2> 
+          <p className="mt-2 text-lg text-gray-700">
             Sign-in with your email or phone number, or sign in with Google.
           </p>
         </div>
@@ -84,7 +86,7 @@ export default function LoginScreen() {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-semibold text-rajputi-green"
+              className="block text-sm font-semibold text-gray-800"
             >
               Email or Phone
             </label>
@@ -94,10 +96,10 @@ export default function LoginScreen() {
               type="text"
               value={formData.username}
               onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-rajputi-green placeholder:text-rajputi-brown focus:outline-none ${
+              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-800 placeholder:text-gray-600 focus:outline-none ${
                 errors.username
-                  ? "border-rajputi-pink"
-                  : "border-rajputi-brown focus:border-rajputi-pink"
+                  ? "border-black"
+                  : "border-gray-400 focus:border-black"
               }`}
             />
             {errors.username && (
@@ -108,7 +110,7 @@ export default function LoginScreen() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-semibold text-rajputi-green"
+              className="block text-sm font-semibold text-gray-800"
             >
               Password
             </label>
@@ -118,20 +120,18 @@ export default function LoginScreen() {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-rajputi-green placeholder:text-rajputi-brown focus:outline-none ${
+              className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-base text-gray-800 placeholder:text-gray-600 focus:outline-none ${
                 errors.password
-                  ? "border-rajputi-pink"
-                  : "border-rajputi-brown focus:border-rajputi-pink"
+                  ? "border-red-500"
+                  : "border-gray-400 focus:border-black"
               }`}
             />
-            {errors.password && (
-              <p className="text-rajputi-pink text-sm mt-1">{errors.password}</p>
-            )}
+        
 
             <div className="text-left mt-2">
               <Link
                 to="/reset-password"
-                className="text-sm font-medium text-rajputi-pink hover:underline"
+                className="text-sm font-medium text-gray-600 hover:text-black"
               >
                 Forgot password ?
               </Link>
@@ -140,11 +140,11 @@ export default function LoginScreen() {
 
           <button
             type="submit"
-            className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow 
+            className={`block w-full border-2 border-black rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow 
                        ${
                          loading
-                           ? "bg-gray-400 text-rajputi-ivory cursor-not-allowed"
-                           : "bg-rajputi-pink text-rajputi-ivory hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+                           ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                           : "bg-gray-700 text-white hover:bg-black focus:outline-rajputi-yellow"
                        }`}
           >
             {loading ? (
@@ -190,11 +190,11 @@ export default function LoginScreen() {
           />
         </div>
 
-        <p className="mt-6 text-center text-sm text-rajputi-brown">
+        <p className="mt-6 text-center text-sm text-gray-700">
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="font-semibold text-rajputi-pink hover:underline"
+            className="font-semibold  hover:text-black"
           >
             Create account
           </Link>
