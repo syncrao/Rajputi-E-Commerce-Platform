@@ -21,7 +21,7 @@ export default function HomeSection({ title, items, loading }) {
   const getDiscount = (mrp, price) => Math.round(((mrp - price) / mrp) * 100);
 
   return (
-    <div className="px-4 mb-10">
+    <div className="px-4 mb-10 lg:mb-24 lg:px-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
         <Link to="/products" className="text-indigo-600 hover:underline">
@@ -29,7 +29,7 @@ export default function HomeSection({ title, items, loading }) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-6">
         {loading
           ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
           : items.map((item) => (

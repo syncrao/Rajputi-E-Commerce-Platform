@@ -91,25 +91,25 @@ export default function RegisterScreen() {
 
   return (
     <GoogleOAuthProvider clientId="136419210304-emidhp4v69n2oslarprvj8l6s4l61tj6.apps.googleusercontent.com">
-      <div className="min-h-screen bg-rajputi-ivory flex flex-col items-center justify-center px-6 py-12 sm:py-24 lg:px-8">
-        <div className="max-w-2xl w-full text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-rajputi-green">
+      <div className="flex flex-col items-center justify-center p-6 lg:px-8">
+        <div className=" w-full text-center m-4">
+          <h2 className="text-4xl sm:text-5xl font-bold">
             Create Account
           </h2>
-          <p className="mt-2 text-lg text-rajputi-brown">
+          <p className="mt-2 text-lg text-gray-600">
             Register with your email and phone number, or sign in with Google.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="mt-10 w-full max-w-xl space-y-6 bg-white p-8 rounded-2xl shadow-lg"
+          className="mt-4 w-full max-w-xl space-y-4"
         >
           {["username", "email", "phone", "password"].map((field) => (
             <div key={field}>
               <label
                 htmlFor={field}
-                className="block text-sm font-semibold text-rajputi-green"
+                className="block text-sm font-semibold text-gray-800"
               >
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
@@ -123,7 +123,7 @@ export default function RegisterScreen() {
                 className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 text-gray-900 placeholder-gray-400 focus:outline-none ${
                   errors[field]
                     ? "border-red-500"
-                    : "border-gray-300 focus:border-rajputi-pink"
+                    : "border-gray-300 focus:border-black"
                 }`}
               />
               {errors[field] && (
@@ -139,22 +139,22 @@ export default function RegisterScreen() {
               type="checkbox"
               checked={agree}
               onChange={handleCheckbox}
-              className={`h-4 w-4 rounded border-gray-300 text-rajputi-pink focus:ring-rajputi-pink ${
+              className={`h-4 w-4 rounded border-gray-300 ${
                 errors.agree ? "border-red-500" : ""
               }`}
             />
-            <label htmlFor="agree" className="text-sm text-rajputi-brown">
+            <label htmlFor="agree" className="text-sm text-gray-700">
               I agree to the{" "}
               <a
                 href="/privacy-policy"
-                className="font-semibold text-rajputi-green hover:underline"
+                className="font-semibold hover:text-black"
               >
                 Privacy Policy
               </a>{" "}
               and{" "}
               <a
                 href="/terms"
-                className="font-semibold text-rajputi-green hover:underline"
+                className="font-semibold hover:text-black"
               >
                 Terms & Conditions
               </a>
@@ -167,10 +167,10 @@ export default function RegisterScreen() {
 
           <button
             type="submit"
-            className={`w-full py-3 rounded-xl text-white font-semibold shadow-lg transition ${
+            className={`w-full py-3 border-2 border-black rounded-xl text-white font-semibold shadow-lg transition ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+                : "bg-gray-600  hover:bg-black focus:outline-rajputi-yellow"
             }`}
           >
             {loading ? (
@@ -216,11 +216,11 @@ export default function RegisterScreen() {
           />
         </div>
 
-        <p className="text-sm text-rajputi-brown">
+        <p className="text-sm text-gray-700">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-semibold text-rajputi-green hover:underline"
+            className="font-semibold  hover:text-black"
           >
             Sign in
           </Link>
