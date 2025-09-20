@@ -144,7 +144,7 @@ export default function LoginScreen() {
                        ${
                          loading
                            ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                           : "bg-gray-700 text-white hover:bg-black focus:outline-rajputi-yellow"
+                           : "bg-gray-600 text-white hover:bg-black focus:outline-rajputi-yellow"
                        }`}
           >
             {loading ? (
