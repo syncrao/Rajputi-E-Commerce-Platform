@@ -95,9 +95,9 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-rajputi-ivory flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-rajputi-green text-center mb-6">
+    <div className="flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <h2 className="text-2xl font-bold text-black text-center mb-4">
           Reset Password
         </h2>
 
@@ -108,14 +108,14 @@ export default function ResetPassword() {
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-800">Email</label>
               <input
                 type="email"
                 name="identifier"
                 value={formData.identifier}
                 onChange={handleChange}
                 className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                  errors.identifier ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                  errors.identifier ? "border-red-500" : "border-gray-300 focus:border-black"
                 }`}
               />
               {errors.identifier && <p className="text-red-500 text-sm mt-1">{errors.identifier}</p>}
@@ -124,8 +124,8 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2.5 rounded-xl text-white font-semibold shadow ${
-                loading ? "bg-gray-400 cursor-not-allowed" : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+              className={`w-full py-2.5 rounded-xl text-white font-semibold shadow border-2 border-black ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-600  hover:bg-black focus:outline-black"
               }`}
             >
               {loading ? "Sending..." : "Send OTP"}
@@ -149,7 +149,7 @@ export default function ResetPassword() {
                     value={digit}
                     onChange={(e) => handleOtpChange(e.target.value, index)}
                     onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                    className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-rajputi-pink"
+                    className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-black"
                   />
                 ))}
               </div>
@@ -157,28 +157,28 @@ export default function ResetPassword() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">New Password</label>
+              <label className="block text-sm font-medium text-gray-800">New Password</label>
               <input
                 type="password"
                 name="new_password"
                 value={formData.new_password}
                 onChange={handleChange}
                 className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                  errors.new_password ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                  errors.new_password ? "border-red-500" : "border-gray-300 focus:border-black"
                 }`}
               />
               {errors.new_password && <p className="text-red-500 text-sm mt-1">{errors.new_password}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-800">Confirm Password</label>
               <input
                 type="password"
                 name="confirm_password"
                 value={formData.confirm_password}
                 onChange={handleChange}
                 className={`mt-2 block w-full rounded-md border-2 px-3.5 py-2 focus:outline-none ${
-                  errors.confirm_password ? "border-red-500" : "border-gray-300 focus:border-rajputi-pink"
+                  errors.confirm_password ? "border-red-500" : "border-gray-300 focus:border-black"
                 }`}
               />
               {errors.confirm_password && <p className="text-red-500 text-sm mt-1">{errors.confirm_password}</p>}
@@ -187,8 +187,8 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2.5 rounded-xl text-white font-semibold shadow ${
-                loading ? "bg-gray-400 cursor-not-allowed" : "bg-rajputi-pink hover:bg-rajputi-orange focus:outline-rajputi-yellow"
+              className={`w-full py-2.5  rounded-xl text-white font-semibold shadow border-2 border-black ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-600 hover:bg-black focus:outline-rajputi-yellow"
               }`}
             >
               {loading ? "Resetting..." : "Reset Password"}

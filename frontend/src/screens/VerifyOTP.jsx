@@ -7,6 +7,7 @@ export const API_URL = import.meta.env.VITE_API_URL;
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [loading, setLoading] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,6 +49,7 @@ export default function VerifyOTP() {
       return;
     }
 
+    setLoading(true);
     try {
       await axios.post(`${API_URL}/user/verify_otp/`, { email, code: finalOtp });
       toast.success("OTP verified successfully!");
@@ -55,14 +57,16 @@ export default function VerifyOTP() {
     } catch (error) {
       toast.error("Invalid OTP");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-rajputi-ivory flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-rajputi-green text-center mb-4">
-          Verify OTP
+    <div className="flex items-center justify-center py-6">
+      <div className="w-full max-w-md p-8">
+        <h2 className="text-2xl font-bold text-black text-center mb-2">
+          Verify OTP  
         </h2>
         <p className="text-gray-600 text-center mb-6">
           Enter the 6-digit code sent to <b>{email}</b>
@@ -78,16 +82,19 @@ export default function VerifyOTP() {
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-rajputi-pink transition"
+              className="w-12 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-black transition"
             />
           ))}
         </div>
 
         <button
           onClick={handleVerify}
-          className="w-full py-2.5 rounded-xl bg-rajputi-pink text-white font-semibold shadow hover:bg-rajputi-orange focus:outline-rajputi-yellow transition"
+          disabled={loading}
+          className={`w-full py-2.5 rounded-xl border-2 border-black font-semibold shadow transition
+            ${loading ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gray-600 text-white hover:bg-black"}
+          `}
         >
-          Verify
+          {loading ? "Verifying..." : "Verify"}
         </button>
       </div>
     </div>
