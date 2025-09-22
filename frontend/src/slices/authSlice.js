@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { postRequest, getRequest } from "../utils/request";
+import { postRequest, getRequest, patchRequest } from "../utils/request";
 
 const authTokens = localStorage.getItem("authToken")
   ? JSON.parse(localStorage.getItem("authToken"))
@@ -15,7 +15,7 @@ export const loginUser = createAsyncThunk(
     try {
       return await postRequest(`user/login/`, { username, password });
     } catch (err) {
-      console.log(err, "djfkdjfk")
+      console.log(err, "djfkdjfk");
       return rejectWithValue(err?.detail || { detail: "Login failed" });
     }
   }
@@ -52,6 +52,26 @@ export const getUser = createAsyncThunk(
     }
   }
 );
+
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (formDataObj, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      const token = auth?.authTokens?.access;
+      const userId = auth?.userInfo?.id;
+
+      if (!token) return rejectWithValue({ detail: "No access token" });
+      if (!userId) return rejectWithValue({ detail: "User ID not found" });
+
+      return await patchRequest(`user/${userId}/`, formDataObj, token, true);
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -109,6 +129,19 @@ const authSlice = createSlice({
       .addCase(googleLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch user";
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userInfo = action.payload;
+        localStorage.setItem("userInfo", JSON.stringify(action.payload));
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update user";
       });
   },
 });

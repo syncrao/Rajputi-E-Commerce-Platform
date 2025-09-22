@@ -41,7 +41,7 @@ export async function getAccessToken(route, refresh) {
   }
 }
 
-export async function updateRequest(route, data, authToken = null) {
+export async function putRequest(route, data, authToken = null) {
   console.log(`${route} Updating...`)
   try {
     const response = await axios.put(`${URL}/${route}`, data, {
@@ -54,6 +54,26 @@ export async function updateRequest(route, data, authToken = null) {
     throw error.response?.data || new Error(error.message)
   }
 }
+
+export async function patchRequest(route, data, authToken = null, isMultipart = false) {
+  console.log(`${route} Updating...`);
+
+  try {
+    const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
+
+    if (isMultipart) {
+      headers["Content-Type"] = "multipart/form-data";
+    }
+
+    const response = await axios.patch(`${URL}/${route}`, data, { headers });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error:", error.response?.data || error.message);
+    throw error.response?.data || new Error(error.message);
+  }
+}
+
 
 export async function deleteRequest(route, authToken) {
   console.log(`${route} Deleting...`)

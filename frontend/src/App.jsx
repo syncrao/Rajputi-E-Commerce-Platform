@@ -5,9 +5,12 @@ import HomeScreen from "./screens/HomeScreen";
 
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
-import ProfileScreen from "./screens/ProfileScreen";
 import VerifyOTP from "./screens/VerifyOTP";
 import ResetPassword from "./screens/ResetPassword";
+
+
+import ProfileScreen from "./screens/ProfileScreen";
+import EditProfileScreen from "./screens/EditProfileScreen";
 
 import ProductsScreen from "./screens/ProductsScreen";
 import ProductScreen from "./screens/ProductScreen";
@@ -20,9 +23,12 @@ export default function App() {
         <Route index element={<HomeScreen />} />
         <Route path="register" element={<RegisterScreen />} />
         <Route path="login" element={<LoginScreen />} />
-        <Route path="profile" element={<ProfileScreen />} />
         <Route path="verifyOTP" element={<VerifyOTP />} />
         <Route path="reset-password" element={<ResetPassword />} />
+
+
+        <Route path="profile" element={<ProfileScreen />} />
+        <Route path="editProfile" element={<EditProfileScreen />} />
 
         <Route path="products" element={<ProductsScreen />} />
         <Route path="product/:id" element={<ProductScreen />} />

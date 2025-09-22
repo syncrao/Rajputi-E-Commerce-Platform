@@ -20,6 +20,10 @@ export default function ProfileScreen() {
     navigate("/login");
   };
 
+  const handleEditProfile = () => {
+    navigate("/editProfile");
+  };
+
   if (loading && !userInfo) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-rajputi-brown">
@@ -37,26 +41,32 @@ export default function ProfileScreen() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-rajputi-ivory">
-      {/* Profile Header */}
-      <div className="flex flex-col items-center justify-center py-10 bg-rajputi-pink shadow-md rounded-b-3xl">
+    <div className="flex flex-col">
+      <div className="flex flex-col items-center justify-center py-10">
         <img
           src={userInfo.profile_pic || "https://via.placeholder.com/120"}
           alt="Profile"
-          className="w-28 h-28 rounded-full border-4 border-rajputi-yellow shadow-lg"
+          className="w-28 h-28 rounded-full"
         />
-        <h2 className="mt-4 text-2xl font-bold text-rajputi-green">
+        <h2 className="mt-4 text-2xl font-bold text-black">
           {userInfo.first_name} {userInfo.last_name}
         </h2>
-        <p className="text-rajputi-brown">{userInfo.email}</p>
+        <p className="text-gray-800">{userInfo.email}</p>
+
+        {/* Edit Profile Button */}
+        <button
+          onClick={handleEditProfile}
+          className="mt-4 px-6 py-2 bg-black text-white font-semibold rounded-xl shadow-md  transition duration-300"
+        >
+          Edit Profile
+        </button>
       </div>
 
-      {/* Profile Details */}
       <div className="flex-1 p-6 space-y-6">
-        <h3 className="text-xl font-semibold text-rajputi-green border-b border-rajputi-brown pb-2">
+        <h3 className="text-xl font-semibold text-black">
           My Details
         </h3>
-        <div className="space-y-3 text-rajputi-brown bg-white p-6 rounded-xl shadow-md">
+        <div className="space-y-3  p-6 border-2 rounded-4 border-gray-400">
           <p>
             <span className="font-medium text-rajputi-green">Username:</span>{" "}
             {userInfo.username}
@@ -76,11 +86,10 @@ export default function ProfileScreen() {
         </div>
       </div>
 
-      {/* Logout Button */}
-      <div className="p-6 bg-rajputi-ivory">
+      <div className="p-6">
         <button
           onClick={handleLogout}
-          className="w-full bg-rajputi-orange text-rajputi-ivory font-semibold py-3 rounded-xl shadow-lg hover:bg-rajputi-pink transition duration-300"
+          className="w-full bg-red-500  border-2 border-red-800  text-white font-semibold py-3 rounded-xl shadow-lg hover:bg-red-700 transition duration-300"
         >
           Logout
         </button>
