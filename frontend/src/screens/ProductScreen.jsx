@@ -1,37 +1,59 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
+import { addToCart } from "../slices/cartSlice";
 
 export default function ProductScreen() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { singleProduct, loading, error, products } = useSelector((state) => state.products);
+  const { singleProduct, loading, error, products } = useSelector(
+    (state) => state.products
+  );
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
 
   useEffect(() => {
-    // Prefetch optimization: if product already in products list, use it
     const existingProduct = products.find((p) => p.id === parseInt(id, 10));
-    if (existingProduct) return;
-
-    dispatch(getProducts());
+    if (!existingProduct) dispatch(getProducts());
   }, [dispatch, id, products]);
 
   const product =
     products.find((p) => p.id === parseInt(id, 10)) || singleProduct;
 
-  if (loading && !product) return <p className="text-center py-10">Loading product...</p>;
+  useEffect(() => {
+    if (product) {
+      const mainImg =
+        product.images.find((img) => img.is_main)?.image ||
+        product.images[0]?.image;
+      setSelectedImage(mainImg);
+      setSelectedSize(product.sizes[0]);
+      setSelectedColor(product.colors[0]);
+    }
+  }, [product]);
+
+  const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) return alert("Select size and color");
+    dispatch(addToCart({ product, selectedSize, selectedColor }));
+    alert("Product added to cart!");
+  };
+
+  if (loading && !product)
+    return <p className="text-center py-10">Loading product...</p>;
   if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
+    <div className="max-w-5xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">
         {/* Product Images */}
         <div className="space-y-4">
           <img
-            src={product.images.find((img) => img.is_main)?.image || product.images[0]?.image}
+            src={selectedImage}
             alt={product.name}
-            className="w-full h-[500px] object-cover rounded-lg shadow"
+            className="w-full object-cover shadow"
           />
           <div className="flex gap-3">
             {product.images.map((img) => (
@@ -39,19 +61,26 @@ export default function ProductScreen() {
                 key={img.id}
                 src={img.image}
                 alt="thumb"
-                className="w-20 h-20 object-cover rounded border hover:ring-2 hover:ring-indigo-500 cursor-pointer"
+                className={`w-20 h-20 object-cover rounded border cursor-pointer hover:ring-2 ${
+                  selectedImage === img.image
+                    ? "ring-indigo-500"
+                    : "ring-transparent"
+                }`}
+                onClick={() => setSelectedImage(img.image)}
               />
             ))}
           </div>
         </div>
 
-        {/* Product Info */}
-        <div>
-          <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
-          <p className="text-gray-600 mb-4">{product.description}</p>
+        {/* Product Details */}
+        <div className="space-y-4">
+          <h1 className="text-2xl font-bold">{product.name}</h1>
+          <p className="text-gray-600">{product.description}</p>
 
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl font-bold text-gray-900">₹{product.price}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl font-bold text-gray-900">
+              ₹{product.price}
+            </span>
             {product.mrp && (
               <span className="line-through text-gray-500">₹{product.mrp}</span>
             )}
@@ -62,16 +91,37 @@ export default function ProductScreen() {
             )}
           </div>
 
-          <p className="mb-2"><strong>Category:</strong> {product.category}</p>
-          <p className="mb-2"><strong>Fabric:</strong> {product.fabric}</p>
+          <p><strong>Category:</strong> {product.category}</p>
 
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2">Available Sizes:</h3>
-            <div className="flex gap-2">
+          {/* Select Color */}
+          <div>
+            <h3 className="font-semibold mb-1">Select Color:</h3>
+            <div className="flex gap-2 flex-wrap">
+              {product.colors.map((color) => (
+                <span
+                  key={color}
+                  className={`px-3 py-1 border rounded cursor-pointer ${
+                    selectedColor === color ? "bg-indigo-600 text-white" : ""
+                  }`}
+                  onClick={() => setSelectedColor(color)}
+                >
+                  {color}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Select Size */}
+          <div>
+            <h3 className="font-semibold mb-1">Select Size:</h3>
+            <div className="flex gap-2 flex-wrap">
               {product.sizes.map((size) => (
                 <span
                   key={size}
-                  className="border px-3 py-1 rounded cursor-pointer hover:bg-gray-100"
+                  className={`px-3 py-1 border rounded cursor-pointer ${
+                    selectedSize === size ? "bg-indigo-600 text-white" : ""
+                  }`}
+                  onClick={() => setSelectedSize(size)}
                 >
                   {size}
                 </span>
@@ -79,8 +129,12 @@ export default function ProductScreen() {
             </div>
           </div>
 
-          <div className="mt-6">
-            <button className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+          {/* Add to Cart */}
+          <div className="mt-4">
+            <button
+              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
           </div>

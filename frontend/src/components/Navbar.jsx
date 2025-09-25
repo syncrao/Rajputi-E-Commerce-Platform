@@ -9,8 +9,7 @@ import {
   UserIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../slices/productSlice";
+import { useSelector } from "react-redux";
 
 const navigation = {
   pages: [{ name: "Products", href: "/products" }],
@@ -19,13 +18,9 @@ const navigation = {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { authTokens } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.cart)
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log("render... ");
-    dispatch(getProducts());
-  }, [dispatch]);
+  
 
   return (
     <div className="bg-white">
@@ -184,17 +179,17 @@ export default function Navbar() {
                   </button>
                 </div>
 
-                <div className="ml-4 mb-1 flow-root lg:ml-6 relative">
+                <Link to="/cart" className="ml-4 mb-1 flow-root lg:ml-6 relative">
                   <button className="group -m-2 flex items-center p-2 relative">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-500 group-hover:text-gray-800"
                     />
-                    <span className="absolute -top-0 -right-0 flex h-4 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white">
-                      {91}
+                    <span className="absolute  -top-0 -right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[14px] font-bold text-white">
+                      {cartItems.length}
                     </span>
                   </button>
-                </div>
+                </Link>
               </div>
             </div>
           </nav>

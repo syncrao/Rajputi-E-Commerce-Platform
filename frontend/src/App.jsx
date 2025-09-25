@@ -14,6 +14,8 @@ import EditProfileScreen from "./screens/EditProfileScreen";
 
 import ProductsScreen from "./screens/ProductsScreen";
 import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import CheckoutScreen from "./screens/CheckoutScreen";
 
 
 export default function App() {
@@ -26,12 +28,13 @@ export default function App() {
         <Route path="verifyOTP" element={<VerifyOTP />} />
         <Route path="reset-password" element={<ResetPassword />} />
 
-
         <Route path="profile" element={<ProfileScreen />} />
         <Route path="editProfile" element={<EditProfileScreen />} />
 
         <Route path="products" element={<ProductsScreen />} />
         <Route path="product/:id" element={<ProductScreen />} />
+        <Route path="cart" element={<CartScreen />} />
+        <Route path="checkout" element={<CheckoutScreen />} />
       </Route>
     </Routes>
   );

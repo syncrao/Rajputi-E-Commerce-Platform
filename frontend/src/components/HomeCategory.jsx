@@ -14,7 +14,7 @@ export default function HomeCategory() {
             <img
               src={cat.img}
               alt={cat.name}
-              className="w-20 h-20 lg:w-28 lg:h-28 rounded-full object-cover"
+              className="w-16 h-16 border-2 border-gray-200 lg:w-28 lg:h-28 rounded-full object-cover"
             />
             <p className="mt-2 text-gray-800 font-medium text-lg">{cat.name}</p>
           </div>
