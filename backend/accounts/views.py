@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import OTP
 import random
+import traceback
 
 User = get_user_model()
 
@@ -41,35 +42,52 @@ class GoogleLoginView(APIView):
         if not google_token:
             return Response({"error": "Google token required"}, status=status.HTTP_400_BAD_REQUEST)
 
-
         try:
-            idinfo = id_token.verify_oauth2_token(google_token, requests.Request(), settings.GOOGLE_ID)
+            idinfo = id_token.verify_oauth2_token(
+                google_token, 
+                requests.Request(), 
+                settings.GOOGLE_ID
+            )
+
             email = idinfo.get("email")
             google_id = idinfo.get("sub")
-            first_name  = idinfo.get("given_name", "")
+            first_name = idinfo.get("given_name", "")
             last_name = idinfo.get("family_name", "")
+            profile_pic = idinfo.get("picture", None)
 
-            user, created = User.objects.get_or_create(
-                google_id=google_id,
-                defaults={
-                    "username": email.split("@")[0],
-                    "email": email,
-                    "first_name" : first_name,
-                    "last_name" : last_name,
-                    "is_email_verified": True,
-                    "password": get_random_string(30)
-                },
-            )
+            user = User.objects.filter(email=email).first()
+
+            if user:
+                if not user.google_id:
+                    user.google_id = google_id
+                    user.is_email_verified = True
+                    if profile_pic and not user.profile_pic:
+                        user.profile_pic = profile_pic 
+                    user.save()
+            else:
+                user = User.objects.create(
+                    google_id=google_id,
+                    username=email.split("@")[0],
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_email_verified=True,
+                    password=get_random_string(30) 
+                )
 
             refresh = RefreshToken.for_user(user)
             return Response({
                 "refresh": str(refresh),
-                "access": str(refresh.access_token),
-                "user": UserSerializer(user).data
+                "access": str(refresh.access_token)
             })
 
         except Exception as e:
-            return Response({"error": "Invalid Google token", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            print("ERROR in GoogleLoginView:", str(e))
+            traceback.print_exc()
+            return Response(
+            {"error": "Invalid Google token", "details": str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -107,7 +125,7 @@ class SendOTPView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        identifier = request.data.get("identifier")
+        identifier = request.data.get("email")
         if not identifier:
             return Response({"error": "Username, email or phone is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -121,7 +139,7 @@ class SendOTPView(APIView):
         print("DEBUG OTP:", code)
 
         if user.email:
-            subject = "Your OTP Code"
+            subject = f"Your OTP Code: {code}"
             message = f"Hello {user.username},\n\nYour OTP code is: {code}\nIt will expire in 5 minutes."
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 

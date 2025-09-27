@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
 import { addToCart } from "../slices/cartSlice";
+import toast from "react-hot-toast";
 
 export default function ProductScreen() {
   const { id } = useParams();
@@ -37,7 +38,7 @@ export default function ProductScreen() {
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) return alert("Select size and color");
     dispatch(addToCart({ product, selectedSize, selectedColor }));
-    alert("Product added to cart!");
+    toast.success("Add to cart")
   };
 
   if (loading && !product)
