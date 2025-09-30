@@ -35,7 +35,6 @@ export default function CartScreen() {
     return acc + price * quantity;
   }, 0);
 
-
   if (cartItems.length === 0)
     return (
       <div className="max-w-5xl mx-auto p-6 text-center">
@@ -64,8 +63,8 @@ export default function CartScreen() {
               />
               <div>
                 <h2 className="font-semibold">{item.product.name}</h2>
-                <p>Size: {item.selectedSize}</p>
-                <p>Color: {item.selectedColor}</p>
+                <p>Size: {item.selectedInventory.size}</p>
+                <p>Color: {item.selectedInventory.color}</p>
                 <p>Price: ₹{item.product.price}</p>
               </div>
             </div>

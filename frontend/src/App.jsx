@@ -14,8 +14,11 @@ import EditProfileScreen from "./screens/EditProfileScreen";
 
 import ProductsScreen from "./screens/ProductsScreen";
 import ProductScreen from "./screens/ProductScreen";
+
 import CartScreen from "./screens/CartScreen";
+import AddressScreen from "./screens/AddressScreen";
 import CheckoutScreen from "./screens/CheckoutScreen";
+import PaymentScreen from "./screens/PaymentScreen";
 
 
 export default function App() {
@@ -33,8 +36,11 @@ export default function App() {
 
         <Route path="products" element={<ProductsScreen />} />
         <Route path="product/:id" element={<ProductScreen />} />
+
         <Route path="cart" element={<CartScreen />} />
+        <Route path="address" element={<AddressScreen />} />
         <Route path="checkout" element={<CheckoutScreen />} />
+        <Route path="payment/:id" element={<PaymentScreen />} />
       </Route>
     </Routes>
   );

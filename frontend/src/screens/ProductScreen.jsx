@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
 import { addToCart } from "../slices/cartSlice";
+import { getRequest } from "../utils/request";
 import toast from "react-hot-toast";
 
 export default function ProductScreen() {
@@ -11,10 +12,13 @@ export default function ProductScreen() {
   const { singleProduct, loading, error, products } = useSelector(
     (state) => state.products
   );
+  console.log(singleProduct);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [inventory, setInventory] = useState([]);
+  const [selectedInventory, setSelectedInventory] = useState({})
 
   useEffect(() => {
     const existingProduct = products.find((p) => p.id === parseInt(id, 10));
@@ -30,15 +34,20 @@ export default function ProductScreen() {
         product.images.find((img) => img.is_main)?.image ||
         product.images[0]?.image;
       setSelectedImage(mainImg);
-      setSelectedSize(product.sizes[0]);
-      setSelectedColor(product.colors[0]);
     }
   }, [product]);
 
+  useEffect(() => {
+    getRequest("products/inventory/1/").then((res) => {
+      console.log(res);
+      setInventory(res);
+    });
+  }, []);
+
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) return alert("Select size and color");
-    dispatch(addToCart({ product, selectedSize, selectedColor }));
-    toast.success("Add to cart")
+    dispatch(addToCart({ product, selectedInventory }));
+    toast.success("Add to cart");
   };
 
   if (loading && !product)
@@ -92,39 +101,28 @@ export default function ProductScreen() {
             )}
           </div>
 
-          <p><strong>Category:</strong> {product.category}</p>
+          <p>
+            <strong>Category:</strong> {product.category}
+          </p>
 
-          {/* Select Color */}
           <div>
-            <h3 className="font-semibold mb-1">Select Color:</h3>
+            <h3 className="font-semibold mb-1">Select Variant:</h3>
             <div className="flex gap-2 flex-wrap">
-              {product.colors.map((color) => (
+              {inventory.map((obj) => (
                 <span
-                  key={color}
+                  key={obj.id}
                   className={`px-3 py-1 border rounded cursor-pointer ${
-                    selectedColor === color ? "bg-indigo-600 text-white" : ""
+                    selectedSize === obj.size && selectedColor === obj.color
+                      ? "bg-indigo-600 text-white"
+                      : ""
                   }`}
-                  onClick={() => setSelectedColor(color)}
+                  onClick={() => {
+                    setSelectedSize(obj.size);
+                    setSelectedColor(obj.color);
+                    setSelectedInventory(obj)
+                  }}
                 >
-                  {color}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Select Size */}
-          <div>
-            <h3 className="font-semibold mb-1">Select Size:</h3>
-            <div className="flex gap-2 flex-wrap">
-              {product.sizes.map((size) => (
-                <span
-                  key={size}
-                  className={`px-3 py-1 border rounded cursor-pointer ${
-                    selectedSize === size ? "bg-indigo-600 text-white" : ""
-                  }`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
+                  {obj.size} - {obj.color} 
                 </span>
               ))}
             </div>
