@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../utils/request";
 
-// Fetch addresses: check localStorage first
 export const fetchAddresses = createAsyncThunk(
   "address/fetchAddresses",
   async (_, { getState, rejectWithValue }) => {
+     console.log("r3esqdas")
     try {
       const { auth } = getState();
       const token = auth?.authTokens?.access;
@@ -12,13 +12,13 @@ export const fetchAddresses = createAsyncThunk(
 
       if (!token || !userId) return rejectWithValue("Not authenticated");
 
-      // Check localStorage first
-      const cached = localStorage.getItem(`addresses_user_${userId}`);
+      const cached = localStorage.getItem(`addresses`);
+       console.log("r3esqdas")
       if (cached) return JSON.parse(cached);
 
-      // Fetch from backend only if no cache
       const data = await getRequest("orders/addresses/", token);
-      localStorage.setItem(`addresses_user_${userId}`, JSON.stringify(data));
+      console.log("r3esqdas")
+      localStorage.setItem(`addresses`, JSON.stringify(data));
       return data;
     } catch (err) {
       return rejectWithValue(err?.detail || "Failed to fetch addresses");
@@ -26,25 +26,24 @@ export const fetchAddresses = createAsyncThunk(
   }
 );
 
-// Add a new address
 export const addNewAddress = createAsyncThunk(
   "address/addNewAddress",
   async (formData, { getState, rejectWithValue }) => {
+     console.log("r3esqdas")
     try {
       const { auth } = getState();
       const token = auth?.authTokens?.access;
-      const userId = auth?.userInfo?.id;
 
-      if (!token || !userId) return rejectWithValue("Not authenticated");
+      if (!token) return rejectWithValue("Not authenticated");
 
       const newAddress = await postRequest("orders/addresses/add/", formData, token);
 
-      // Update localStorage
-      const cached = localStorage.getItem(`addresses_user_${userId}`);
-      const arr = cached ? [newAddress, ...JSON.parse(cached)] : [newAddress];
-      localStorage.setItem(`addresses_user_${userId}`, JSON.stringify(arr));
+      const cached = localStorage.getItem(`addresses`);
 
-      return newAddress;
+      const arr = cached ? [newAddress, ...JSON.parse(cached)] : [newAddress];
+      localStorage.setItem(`addresses`, JSON.stringify(arr));
+
+      return arr;
     } catch (err) {
       return rejectWithValue(err?.detail || "Failed to add address");
     }

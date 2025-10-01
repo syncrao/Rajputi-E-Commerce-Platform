@@ -10,9 +10,10 @@ export default function AddressScreen() {
   const dispatch = useDispatch();
 
   const { authTokens, userInfo } = useSelector((state) => state.auth);
+  const { addresses } = useSelector((state) => state.address)
 
-  const [addresses, setAddresses] = useState([]);
-  const [showModal, setShowModal] = useState(false); // modal visibility
+  // const [addresses, setAddresses] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -34,7 +35,7 @@ export default function AddressScreen() {
       return;
     }
     getRequest("orders/addresses/", authTokens.access).then((res) => {
-      setAddresses(res);
+  
     });
   }, [authTokens, navigate]);
 

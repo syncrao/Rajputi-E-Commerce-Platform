@@ -7,7 +7,7 @@ export default function HomeCategory() {
   ];
 
   return (
-    <div className="px-4 py-12">
+    <div className="px-2 py-12">
       <div className="grid grid-cols-4 sm:grid-cols-4 gap-2">
         {categories.map((cat, i) => (
           <div key={i} className="flex flex-col items-center rounded-lg">
