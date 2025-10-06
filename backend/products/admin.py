@@ -35,12 +35,11 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "category",
         "fabric",
-        "product_type",
         "price",
         "mrp",
         "created_at",
     )
-    list_filter = ("category", "fabric", "product_type")
+    list_filter = ("category", "fabric")
     search_fields = ("name", "description")
     inlines = [ProductImageInline, ProductRatingInline, ProductInventoryInline]
 
@@ -59,6 +58,9 @@ class ProductRatingAdmin(admin.ModelAdmin):
 
 @admin.register(ProductInventory)
 class ProductInventoryAdmin(admin.ModelAdmin):
-    list_display = ("product", "size", "color", "quantity")
+    def product_id(self, obj):
+        return obj.product.id
+    
+    list_display = ("product_id", "product", "size", "color", "quantity")
     list_filter = ("product", "size", "color")
     search_fields = ("product__name",)

@@ -2,7 +2,8 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Max, Count
-from .models import Product
+from .models import Product, ProductInventory
+from django.http import JsonResponse
 from .serializers import ProductListSerializer
 
 
@@ -28,3 +29,14 @@ class ProductLastUpdatedView(APIView):
             count=Count("id")
         )
         return Response(agg)
+
+
+def inventory(request, product_id):
+    inventories = ProductInventory.objects.filter(product_id=product_id).values(
+        'id',
+        'product_id',
+        'size',
+        'color',
+        'quantity'
+    )
+    return JsonResponse(list(inventories), safe=False)

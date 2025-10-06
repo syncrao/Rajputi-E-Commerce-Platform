@@ -2,62 +2,59 @@ from django.db import models
 from cloudinary.models import CloudinaryField
 from django.conf import settings
 
-PRODUCT_TYPES = [
-    ("ready_dress", "Ready Dress"),
-    ("fabric_only", "Fabric Only"),
-]
 
 CATEGORY_CHOICES = [
-    ("poshak", "Poshak"),
-    ("dupatta", "Dupatta"),
-    ("suit", "Suit"),
-    ("odhna", "Odhna"),
+    ("Poshak", "Poshak"),
+    ("Dupatta", "Dupatta"),
+    ("Suit", "Suit"),
+    ("Odhna", "Odhna"),
+    ("Lehenga", "Lehenga"),
 ]
 
 FABRIC_CHOICES = [
-    ("cotton", "Cotton"),
-    ("silk", "Silk"),
-    ("georgette", "Georgette"),
-    ("velvet", "Velvet"),
+    ("Cotton", "Cotton"),
+    ("Silk", "Silk"),
+    ("Georgette", "Georgette"),
+    ("Velvet", "Velvet"),
 ]
 
 SIZE_CHOICES = [
-    ("s", "Small"),
-    ("m", "Medium"),
-    ("l", "Large"),
-    ("xl", "Extra Large"),
-    ("xxl", "2XL"),
+    ("S", "Small"),
+    ("M", "Medium"),
+    ("L", "Large"),
+    ("XL", "Extra Large"),
+    ("XXL", "2XL"),
 ]
 
 COLOR_CHOICES = [
-    ("red", "Red"),
-    ("blue", "Blue"),
-    ("green", "Green"),
-    ("yellow", "Yellow"),
-    ("black", "Black"),
-    ("white", "White"),
+    ("Red", "Red"),
+    ("Blue", "Blue"),
+    ("Green", "Green"),
+    ("Yellow", "Yellow"),
+    ("Black", "Black"),
+    ("White", "White"),
 ]
 
 FEEDBACK_CHOICES = [
-    ("tight", "Tight"),
-    ("a_little_tight", "A Little Tight"),
-    ("just_right", "Just Right"),
-    ("a_little_loose", "A Little Loose"),
-    ("loose", "Loose"),
+    ("Tight", "Tight"),
+    ("A Little Tight", "A Little Tight"),
+    ("Just Right", "Just Right"),
+    ("A Little Loose", "A Little Loose"),
+    ("Loose", "Loose"),
 ]
 
 LENGTH_CHOICES = [
-    ("short", "Short"),
-    ("a_little_short", "A Little Short"),
-    ("just_right", "Just Right"),
-    ("a_little_long", "A Little Long"),
-    ("long", "Long"),
+    ("Short", "Short"),
+    ("A Little Short", "A Little Short"),
+    ("Just Right", "Just Right"),
+    ("A Little Long", "A Little Long"),
+    ("Long", "Long"),
 ]
 
 TRANSPARENCY_CHOICES = [
-    ("low", "Low"),
-    ("medium", "Medium"),
-    ("high", "High"),
+    ("Low", "Low"),
+    ("Medium", "Medium"),
+    ("High", "High"),
 ]
 
 
@@ -67,7 +64,6 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES)
     price = models.DecimalField(max_digits=10, decimal_places=2)  
     mrp = models.DecimalField(max_digits=10, decimal_places=2)   
 
@@ -76,8 +72,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-  
 
 
 class ProductImage(models.Model):
@@ -99,7 +93,7 @@ class ProductInventory(models.Model):
         unique_together = ("product", "size", "color")
 
     def __str__(self):
-        return f"{self.product.name} - {self.size} - {self.color} ({self.quantity})"
+        return f"{self.product.id} - {self.product.name} - {self.size} - {self.color} ({self.quantity})"
 
 
 class ProductRating(models.Model):

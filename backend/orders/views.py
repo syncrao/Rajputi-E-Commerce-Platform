@@ -12,7 +12,20 @@ class OrderListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user).order_by("-created_at")
+        return (
+            Order.objects.filter(user=self.request.user)
+            .select_related("address")
+            .prefetch_related("items__inventory__product")
+            .order_by("-created_at")
+        )
+    
+class OrderDetailView(generics.RetrieveAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Only allow fetching orders for the current user
+        return Order.objects.filter(user=self.request.user)
 
 
 class CreateOrderView(APIView):
@@ -26,7 +39,6 @@ class CreateOrderView(APIView):
         address_id = serializer.validated_data.get("address_id")
         items_data = serializer.validated_data["items"]
 
-        # Fetch Address
         if address_id:
             try:
                 address = Address.objects.get(id=address_id, user=request.user)
@@ -38,7 +50,6 @@ class CreateOrderView(APIView):
             except Address.DoesNotExist:
                 return Response({"error": "No default address found"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create Order
         order = Order.objects.create(user=request.user, address=address, total_price=0, status="pending")
         total_price = 0
 
@@ -67,7 +78,6 @@ class CreateOrderView(APIView):
                 price=price,
             )
 
-            # Reduce stock
             inventory.quantity -= quantity
             inventory.save()
 
@@ -90,6 +100,19 @@ class AddressCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        if serializer.validated_data.get("is_default"):
+            Address.objects.filter(user=self.request.user, is_default=True).update(is_default=False)
+        serializer.save(user=self.request.user)
+
+
+class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_update(self, serializer):
         if serializer.validated_data.get("is_default"):
             Address.objects.filter(user=self.request.user, is_default=True).update(is_default=False)
         serializer.save(user=self.request.user)

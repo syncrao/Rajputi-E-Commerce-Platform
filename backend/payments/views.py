@@ -9,7 +9,6 @@ from products.models import ProductInventory
 from .serializers import PaymentSerializer
 
 
-# 🔹 Mock Payment Function-Based View
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @transaction.atomic
@@ -23,23 +22,24 @@ def MockPaymentView(request, order_id):
     - Updates order status to 'paid'
     """
     try:
-        order = Order.objects.select_related('address').prefetch_related('items').get(id=order_id, user=request.user)
+        order = Order.objects.select_related('address').prefetch_related('items__inventory__product').get(
+            id=order_id, user=request.user
+        )
     except Order.DoesNotExist:
         return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if order.status != "pending":
         return Response({"error": "Order already paid or cancelled"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Validate stock
+    # ✅ Validate stock
     insufficient_items = []
     for item in order.items.all():
-        inventory = ProductInventory.objects.filter(
-            product=item.product,
-            size=item.size,
-            color=item.color
-        ).first()
+        inventory = item.inventory
         if not inventory or inventory.quantity < item.quantity:
-            insufficient_items.append(f"{item.product.name} (Available: {inventory.quantity if inventory else 0})")
+            insufficient_items.append(
+                f"{inventory.product.name if inventory else 'Unknown Product'} "
+                f"(Available: {inventory.quantity if inventory else 0})"
+            )
 
     if insufficient_items:
         return Response(
@@ -47,31 +47,27 @@ def MockPaymentView(request, order_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Deduct stock
+    # ✅ Deduct stock
     for item in order.items.all():
-        inventory = ProductInventory.objects.get(
-            product=item.product,
-            size=item.size,
-            color=item.color
-        )
+        inventory = item.inventory
         inventory.quantity -= item.quantity
         inventory.save()
 
-    # Mock payment transaction
+    # ✅ Mock payment transaction
     transaction_id = f"TXN{order.id}{order.user.id}123"
     payment = Payment.objects.create(
         order=order,
         amount=order.total_price,
-        payment_method="mock_gateway",
         status="success",
         transaction_id=transaction_id,
     )
 
-    # Update order status
+    # ✅ Update order status
     order.status = "paid"
     order.save()
 
     return Response(PaymentSerializer(payment).data, status=status.HTTP_201_CREATED)
+
 
 
 # 🔹 Payment List Class-Based View

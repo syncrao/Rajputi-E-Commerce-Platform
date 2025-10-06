@@ -14,5 +14,4 @@ django.setup()
 
 application = get_wsgi_application()
 
-
 app = application
