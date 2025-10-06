@@ -20,6 +20,8 @@ import AddressScreen from "./screens/AddressScreen";
 import CheckoutScreen from "./screens/CheckoutScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 
+import OrderScreen from "./screens/OrderScreen";
+
 
 export default function App() {
   return (
@@ -41,6 +43,8 @@ export default function App() {
         <Route path="address" element={<AddressScreen />} />
         <Route path="checkout" element={<CheckoutScreen />} />
         <Route path="payment/:id" element={<PaymentScreen />} />
+
+        <Route path="orders" element={<OrderScreen />} />
       </Route>
     </Routes>
   );

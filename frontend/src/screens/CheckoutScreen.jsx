@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { postRequest, getRequest } from "../utils/request";
+import { clearCart } from "../slices/cartSlice";
 import toast from "react-hot-toast";
 
 export default function CheckoutScreen() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { authTokens, userInfo } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [loading, setLoading] = useState(false); // 🔹 Added loader state
 
   useEffect(() => {
     if (!authTokens) {
@@ -51,11 +54,13 @@ export default function CheckoutScreen() {
     return acc + price * quantity;
   }, 0);
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!selectedAddress) {
       alert("Please select a shipping address first.");
       return;
     }
+
+    setLoading(true); // 🔹 Start loader
 
     const order = {
       address_id: selectedAddress.id,
@@ -65,11 +70,17 @@ export default function CheckoutScreen() {
       })),
     };
 
-    postRequest("orders/create/", order, authTokens.access).then((res) => {
-      console.log(res, "order created");
+    try {
+      const res = await postRequest("orders/create/", order, authTokens.access);
       toast.success("Order placed successfully!");
-      navigate(`/payment/${res.id}`)
-    });
+      dispatch(clearCart());
+      navigate(`/payment/${res.id}`);
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false); // 🔹 Stop loader
+    }
   };
 
   const handleChangeAddress = () => {
@@ -77,7 +88,7 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 pb-24">
+    <div className="max-w-5xl mx-auto p-6 pb-24 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
       <div className="mb-6 p-4 border rounded-lg flex justify-between items-center">
@@ -135,9 +146,38 @@ export default function CheckoutScreen() {
         <h2 className="text-xl font-bold">Total: ₹{totalPrice}</h2>
         <button
           onClick={handlePayment}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"
+          disabled={loading}
+          className={`flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
         >
-          Pay Now
+          {loading ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+              Processing...
+            </>
+          ) : (
+            "Checkout"
+          )}
         </button>
       </div>
     </div>

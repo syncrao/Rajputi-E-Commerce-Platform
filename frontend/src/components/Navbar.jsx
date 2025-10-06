@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {
@@ -12,7 +12,10 @@ import {
 import { useSelector } from "react-redux";
 
 const navigation = {
-  pages: [{ name: "Products", href: "/products" }],
+  pages: [
+    { name: "Products", href: "/products" }, 
+    { name: "My Orders", href: "/orders" },
+  ],
 };
 
 export default function Navbar() {

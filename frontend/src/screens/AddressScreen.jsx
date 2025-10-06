@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { deleteRequest, putRequest } from "../utils/request";
-import { selectAddress, fetchAddresses, addNewAddress } from "../slices/addressSlice";
+import { getRequest, postRequest, putRequest, deleteRequest } from "../utils/request";
 
 export default function AddressScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
-  const { authTokens, userInfo } = useSelector((state) => state.auth);
-  const { addresses, loading } = useSelector((state) => state.address);
+  // ✅ Authentication from localStorage
+  const authTokens = JSON.parse(localStorage.getItem("authToken"));
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -23,19 +24,32 @@ export default function AddressScreen() {
     country: "India",
     is_default: false,
   });
-  const [editingId, setEditingId] = useState(null);
 
   const redirectBack = location.state?.fromCheckout || false;
 
-  // ✅ Fetch addresses from Redux
+  // ✅ Fetch addresses from API
   useEffect(() => {
     if (!authTokens) {
       navigate("/login");
       return;
     }
-    dispatch(fetchAddresses());
-  }, [authTokens, navigate, dispatch]);
+    fetchAddresses();
+  }, []);
 
+  const fetchAddresses = async () => {
+    setLoading(true);
+    try {
+      const data = await getRequest("orders/addresses/", authTokens.access);
+      setAddresses(data);
+      localStorage.setItem(`addresses_user_${userInfo?.id}`, JSON.stringify(data));
+    } catch (err) {
+      console.error("Failed to fetch addresses:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -44,6 +58,7 @@ export default function AddressScreen() {
     }));
   };
 
+  // ✅ Reset form after add/edit
   const resetForm = () => {
     setFormData({
       full_name: "",
@@ -60,28 +75,33 @@ export default function AddressScreen() {
   };
 
   // ✅ Add or update address
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingId) {
-      putRequest(`orders/addresses/${editingId}/`, formData, authTokens.access).then(() => {
-        dispatch(fetchAddresses()); // refresh Redux state
-        resetForm();
-      });
-    } else {
-      dispatch(addNewAddress(formData));
+    try {
+      if (editingId) {
+        await putRequest(`orders/addresses/${editingId}/`, formData, authTokens.access);
+      } else {
+        await postRequest("orders/addresses/add/", formData, authTokens.access);
+      }
+      await fetchAddresses();
       resetForm();
+    } catch (err) {
+      console.error("Failed to save address:", err);
     }
   };
 
   // ✅ Delete address
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this address?")) return;
-    deleteRequest(`orders/addresses/${id}/`, authTokens.access).then(() => {
-      dispatch(fetchAddresses()); // refresh Redux after deletion
-    });
+    try {
+      await deleteRequest(`orders/addresses/${id}/`, authTokens.access);
+      await fetchAddresses();
+    } catch (err) {
+      console.error("Failed to delete address:", err);
+    }
   };
 
-  // ✅ Edit address
+  // ✅ Edit existing address
   const handleEdit = (addr) => {
     setEditingId(addr.id);
     setFormData({
@@ -99,13 +119,12 @@ export default function AddressScreen() {
 
   // ✅ Select address for checkout
   const handleSelectAddress = (addr) => {
-    dispatch(selectAddress(addr.id));
     localStorage.setItem(`selected_address_user_${userInfo?.id}`, JSON.stringify(addr));
     if (redirectBack) navigate("/checkout");
   };
 
   return (
-    <div className="p-6 h-screen max-w-3xl mx-auto">
+    <div className="p-6 min-h-screen max-w-3xl mx-auto">
       <h2 className="text-xl font-bold mb-4">My Addresses</h2>
 
       {loading && <p>Loading...</p>}
@@ -158,7 +177,7 @@ export default function AddressScreen() {
         )}
       </div>
 
-      {/* Add New Address Button (fixed at bottom) */}
+      {/* Add New Address Button */}
       <div className="fixed bottom-4 left-0 w-full flex justify-center">
         <button
           onClick={() => setShowModal(true)}
@@ -177,68 +196,26 @@ export default function AddressScreen() {
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                name="full_name"
-                placeholder="Full Name"
-                value={formData.full_name}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="street"
-                placeholder="Street"
-                value={formData.street}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="city"
-                placeholder="City"
-                value={formData.city}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="state"
-                placeholder="State"
-                value={formData.state}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="postal_code"
-                placeholder="Postal Code"
-                value={formData.postal_code}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-                required
-              />
-              <input
-                type="text"
-                name="country"
-                placeholder="Country"
-                value={formData.country}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-              />
+              {[
+                "full_name",
+                "phone",
+                "street",
+                "city",
+                "state",
+                "postal_code",
+                "country",
+              ].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  name={field}
+                  placeholder={field.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  className="w-full border rounded p-2"
+                  required={field !== "country"}
+                />
+              ))}
 
               <label className="flex items-center space-x-2">
                 <input
