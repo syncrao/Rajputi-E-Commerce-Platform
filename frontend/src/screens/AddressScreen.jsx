@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getRequest, postRequest, putRequest, deleteRequest } from "../utils/request";
-import { selectAddress } from "../slices/addressSlice";
+import { deleteRequest, putRequest } from "../utils/request";
+import { selectAddress, fetchAddresses, addNewAddress } from "../slices/addressSlice";
 
 export default function AddressScreen() {
   const navigate = useNavigate();
@@ -10,9 +10,8 @@ export default function AddressScreen() {
   const dispatch = useDispatch();
 
   const { authTokens, userInfo } = useSelector((state) => state.auth);
-  const { addresses } = useSelector((state) => state.address)
+  const { addresses, loading } = useSelector((state) => state.address);
 
-  // const [addresses, setAddresses] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
@@ -28,16 +27,14 @@ export default function AddressScreen() {
 
   const redirectBack = location.state?.fromCheckout || false;
 
-  // Fetch addresses
+  // ✅ Fetch addresses from Redux
   useEffect(() => {
     if (!authTokens) {
       navigate("/login");
       return;
     }
-    getRequest("orders/addresses/", authTokens.access).then((res) => {
-  
-    });
-  }, [authTokens, navigate]);
+    dispatch(fetchAddresses());
+  }, [authTokens, navigate, dispatch]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -62,37 +59,29 @@ export default function AddressScreen() {
     setShowModal(false);
   };
 
-  // Add or update address
+  // ✅ Add or update address
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editingId) {
-      putRequest(`orders/addresses/${editingId}/`, formData, authTokens.access).then(
-        (res) => {
-          setAddresses((prev) =>
-            prev.map((addr) => (addr.id === editingId ? res : addr))
-          );
-          resetForm();
-        }
-      );
+      putRequest(`orders/addresses/${editingId}/`, formData, authTokens.access).then(() => {
+        dispatch(fetchAddresses()); // refresh Redux state
+        resetForm();
+      });
     } else {
-      postRequest("orders/addresses/add/", formData, authTokens.access).then(
-        (res) => {
-          setAddresses((prev) => [res, ...prev]);
-          resetForm();
-        }
-      );
+      dispatch(addNewAddress(formData));
+      resetForm();
     }
   };
 
-  // Delete address
+  // ✅ Delete address
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this address?")) return;
     deleteRequest(`orders/addresses/${id}/`, authTokens.access).then(() => {
-      setAddresses((prev) => prev.filter((addr) => addr.id !== id));
+      dispatch(fetchAddresses()); // refresh Redux after deletion
     });
   };
 
-  // Edit address
+  // ✅ Edit address
   const handleEdit = (addr) => {
     setEditingId(addr.id);
     setFormData({
@@ -105,22 +94,21 @@ export default function AddressScreen() {
       country: addr.country,
       is_default: addr.is_default,
     });
-    setShowModal(true); // open modal when editing
+    setShowModal(true);
   };
 
-  // Select address for checkout
+  // ✅ Select address for checkout
   const handleSelectAddress = (addr) => {
     dispatch(selectAddress(addr.id));
     localStorage.setItem(`selected_address_user_${userInfo?.id}`, JSON.stringify(addr));
-
-    if (redirectBack) {
-      navigate("/checkout");
-    }
+    if (redirectBack) navigate("/checkout");
   };
 
   return (
     <div className="p-6 h-screen max-w-3xl mx-auto">
       <h2 className="text-xl font-bold mb-4">My Addresses</h2>
+
+      {loading && <p>Loading...</p>}
 
       {/* Address List */}
       <div className="space-y-3 mb-24">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { postRequest, getRequest } from "../utils/request";
+import toast from "react-hot-toast";
 
 export default function CheckoutScreen() {
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ export default function CheckoutScreen() {
 
   const [selectedAddress, setSelectedAddress] = useState(null);
 
-  // Load selected address from localStorage or fetch default
   useEffect(() => {
     if (!authTokens) {
       navigate("/login");
@@ -21,7 +21,6 @@ export default function CheckoutScreen() {
     if (savedAddress) {
       setSelectedAddress(JSON.parse(savedAddress));
     } else {
-      // If no address in localStorage, fetch addresses and select default
       getRequest("orders/addresses/", authTokens.access).then((res) => {
         const defaultAddr = res.find((addr) => addr.is_default) || null;
         if (defaultAddr) {
@@ -68,8 +67,8 @@ export default function CheckoutScreen() {
 
     postRequest("orders/create/", order, authTokens.access).then((res) => {
       console.log(res, "order created");
-      alert("Order placed successfully!");
-      // Optionally, clear cart or redirect
+      toast.success("Order placed successfully!");
+      navigate(`/payment/${res.id}`)
     });
   };
 
@@ -81,7 +80,6 @@ export default function CheckoutScreen() {
     <div className="max-w-5xl mx-auto p-6 pb-24">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
-      {/* Selected Address */}
       <div className="mb-6 p-4 border rounded-lg flex justify-between items-center">
         {selectedAddress ? (
           <div>
@@ -104,7 +102,6 @@ export default function CheckoutScreen() {
         </button>
       </div>
 
-      {/* Cart Items */}
       <div className="space-y-4">
         {cartItems.map((item, idx) => (
           <div
@@ -134,7 +131,6 @@ export default function CheckoutScreen() {
         ))}
       </div>
 
-      {/* Bottom Bar */}
       <div className="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex justify-between items-center shadow-lg">
         <h2 className="text-xl font-bold">Total: ₹{totalPrice}</h2>
         <button

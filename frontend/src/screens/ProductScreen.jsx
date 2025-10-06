@@ -38,7 +38,7 @@ export default function ProductScreen() {
   }, [product]);
 
   useEffect(() => {
-    getRequest("products/inventory/1/").then((res) => {
+    getRequest(`products/inventory/${id}/`).then((res) => {
       console.log(res);
       setInventory(res);
     });

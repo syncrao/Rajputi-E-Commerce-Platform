@@ -4,20 +4,17 @@ import { getRequest, postRequest } from "../utils/request";
 export const fetchAddresses = createAsyncThunk(
   "address/fetchAddresses",
   async (_, { getState, rejectWithValue }) => {
-     console.log("r3esqdas")
+
     try {
       const { auth } = getState();
       const token = auth?.authTokens?.access;
       const userId = auth?.userInfo?.id;
 
-      if (!token || !userId) return rejectWithValue("Not authenticated");
-
+      if (!token) return rejectWithValue("Not authenticated");
       const cached = localStorage.getItem(`addresses`);
-       console.log("r3esqdas")
       if (cached) return JSON.parse(cached);
 
       const data = await getRequest("orders/addresses/", token);
-      console.log("r3esqdas")
       localStorage.setItem(`addresses`, JSON.stringify(data));
       return data;
     } catch (err) {
@@ -29,7 +26,6 @@ export const fetchAddresses = createAsyncThunk(
 export const addNewAddress = createAsyncThunk(
   "address/addNewAddress",
   async (formData, { getState, rejectWithValue }) => {
-     console.log("r3esqdas")
     try {
       const { auth } = getState();
       const token = auth?.authTokens?.access;

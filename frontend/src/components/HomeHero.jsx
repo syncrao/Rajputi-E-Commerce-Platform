@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function HomeHero() {
   const desktopImages = [
@@ -23,7 +24,7 @@ export default function HomeHero() {
   }, [desktopImages.length]);
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <Link to="products"  className="relative w-full overflow-hidden">
       {desktopImages.map((img, index) => (
         <img
           key={index}
@@ -45,8 +46,7 @@ export default function HomeHero() {
           }`}
         />
       ))}
-
-      {/* Dots */}
+      
       <div className="absolute bottom-4 inset-x-0 flex justify-center gap-3">
         {desktopImages.map((_, i) => (
           <span
@@ -57,6 +57,6 @@ export default function HomeHero() {
           ></span>
         ))}
       </div>
-    </div>
+    </Link>
   );
 }
