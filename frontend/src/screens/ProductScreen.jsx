@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
 import { addToCart } from "../slices/cartSlice";
+import { addToWishlist, removeFromWishlist } from "../slices/wishlistSlice";
 import { getRequest } from "../utils/request";
 import toast from "react-hot-toast";
+import { HeartIcon as OutlineHeart, HeartIcon as SolidHeart } from "@heroicons/react/24/outline";
 
 export default function ProductScreen() {
   const { id } = useParams();
@@ -12,13 +14,15 @@ export default function ProductScreen() {
   const { singleProduct, loading, error, products } = useSelector(
     (state) => state.products
   );
-  console.log(singleProduct);
+  const { products: wishlist } = useSelector((state) => state.wishlist);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [inventory, setInventory] = useState([]);
-  const [selectedInventory, setSelectedInventory] = useState({})
+  const [selectedInventory, setSelectedInventory] = useState({});
+
+  const isInWishlist = wishlist.some((p) => p.id === parseInt(id, 10));
 
   useEffect(() => {
     const existingProduct = products.find((p) => p.id === parseInt(id, 10));
@@ -38,16 +42,24 @@ export default function ProductScreen() {
   }, [product]);
 
   useEffect(() => {
-    getRequest(`products/inventory/${id}/`).then((res) => {
-      console.log(res);
-      setInventory(res);
-    });
-  }, []);
+    getRequest(`products/inventory/${id}/`).then((res) => setInventory(res));
+  }, [id]);
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) return alert("Select size and color");
     dispatch(addToCart({ product, selectedInventory }));
-    toast.success("Add to cart");
+    toast.success("Added to cart");
+  };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    if (isInWishlist) {
+      dispatch(removeFromWishlist(product.id));
+      toast.success("Removed from wishlist");
+    } else {
+      dispatch(addToWishlist(product));
+      toast.success("Added to wishlist");
+    }
   };
 
   if (loading && !product)
@@ -59,13 +71,23 @@ export default function ProductScreen() {
     <div className="max-w-5xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">
         {/* Product Images */}
-        <div className="space-y-4">
+        <div className="space-y-4 relative">
           <img
             src={selectedImage}
             alt={product.name}
-            className="w-full object-cover shadow"
+            className="w-full object-cover shadow rounded"
           />
-          <div className="flex gap-3">
+          <button
+            className="absolute top-2 right-2 p-2 rounded-full bg-white shadow hover:bg-gray-100"
+            onClick={handleWishlistToggle}
+          >
+            {isInWishlist ? (
+              <SolidHeart className="w-6 h-6 text-red-500" />
+            ) : (
+              <OutlineHeart className="w-6 h-6 text-gray-500" />
+            )}
+          </button>
+          <div className="flex gap-3 mt-2">
             {product.images.map((img) => (
               <img
                 key={img.id}
@@ -119,17 +141,17 @@ export default function ProductScreen() {
                   onClick={() => {
                     setSelectedSize(obj.size);
                     setSelectedColor(obj.color);
-                    setSelectedInventory(obj)
+                    setSelectedInventory(obj);
                   }}
                 >
-                  {obj.size} - {obj.color} 
+                  {obj.size} - {obj.color}
                 </span>
               ))}
             </div>
           </div>
 
           {/* Add to Cart */}
-          <div className="mt-4">
+          <div className="mt-4 flex gap-3">
             <button
               className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
               onClick={handleAddToCart}

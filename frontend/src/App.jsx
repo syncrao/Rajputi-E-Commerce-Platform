@@ -21,6 +21,7 @@ import CheckoutScreen from "./screens/CheckoutScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 
 import OrderScreen from "./screens/OrderScreen";
+import WishlistScreen from "./screens/WishlistScreen";
 
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="payment/:id" element={<PaymentScreen />} />
 
         <Route path="orders" element={<OrderScreen />} />
+        <Route path="wishlist" element={<WishlistScreen />} />
       </Route>
     </Routes>
   );

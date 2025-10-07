@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getRequest } from "../utils/request";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 export default function OrderScreen() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const authTokens = JSON.parse(localStorage.getItem("authToken"));
 
   useEffect(() => {
@@ -68,9 +70,7 @@ export default function OrderScreen() {
             className="border rounded-xl p-4 shadow-sm hover:shadow-md transition bg-white"
           >
             <div className="flex flex-wrap justify-between items-center mb-3">
-              <h2 className="font-semibold text-lg">
-                Order #{order.id}
-              </h2>
+              <h2 className="font-semibold text-lg">Order #{order.id}</h2>
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
                   order.status === "paid"
@@ -85,14 +85,15 @@ export default function OrderScreen() {
             </div>
 
             <p className="text-gray-600 text-sm mb-2">
-              Placed on: {dayjs(order.created_at).format("DD MMM YYYY, hh:mm A")}
+              Placed on:{" "}
+              {dayjs(order.created_at).format("DD MMM YYYY, hh:mm A")}
             </p>
 
             <div className="border rounded-lg p-3 bg-gray-50 mb-4">
               <p className="font-medium">{order.address.full_name}</p>
               <p className="text-sm text-gray-600">
-                {order.address.street}, {order.address.city}, {order.address.state} -{" "}
-                {order.address.postal_code}
+                {order.address.street}, {order.address.city},{" "}
+                {order.address.state} - {order.address.postal_code}
               </p>
               <p className="text-sm text-gray-600">
                 {order.address.country} | 📞 {order.address.phone}
@@ -112,7 +113,9 @@ export default function OrderScreen() {
                         Size: {item.size}, Color: {item.color}
                       </p>
                     )}
-                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    <p className="text-sm text-gray-500">
+                      Qty: {item.quantity}
+                    </p>
                   </div>
                   <p className="font-semibold">₹{item.price}</p>
                 </div>
@@ -123,12 +126,22 @@ export default function OrderScreen() {
               <p className="font-semibold text-lg">
                 Total: ₹{Number(order.total_price).toFixed(2)}
               </p>
-              <button
-                onClick={() => alert(`Order ID: ${order.id}`)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-              >
-                View Details
-              </button>
+
+              {order.status === "pending" ? (
+                <button
+                  onClick={() => navigate(`/payment/${order.id}`)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                >
+                  Pay now
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate(`/payment/${order.id}`)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                >
+                  View Details
+                </button>
+              )}
             </div>
           </div>
         ))}
