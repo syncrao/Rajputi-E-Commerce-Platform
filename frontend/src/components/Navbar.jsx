@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -25,9 +25,7 @@ export default function Navbar() {
   const { authTokens } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.products);
-  const navigate = useNavigate();
 
-  // Filter products by query
   const filtered = useMemo(() => {
     if (!query.trim()) return [];
     const lower = query.toLowerCase();
@@ -41,7 +39,6 @@ export default function Navbar() {
 
   return (
     <div className="bg-white">
-      {/* Mobile menu */}
       <Dialog open={open} onClose={setOpen} className="relative z-50 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/25" />
         <div className="fixed inset-0 z-40 flex">
@@ -101,8 +98,6 @@ export default function Navbar() {
           </DialogPanel>
         </div>
       </Dialog>
-
-      {/* Navbar */}
       <div className="border-b border-gray-200 w-full z-10 fixed top-0 left-0 bg-white">
         <header className="relative bg-white">
           <p className="flex h-6 items-center justify-center border-b px-4 text-sm text-gray-600">
@@ -114,7 +109,6 @@ export default function Navbar() {
             className="px-4 sm:px-6 lg:px-8 transition-all duration-100"
           >
             <div className="flex h-14 items-center relative">
-              {/* Left section for mobile */}
               <div className="flex items-center lg:hidden">
                 <button
                   type="button"
@@ -131,15 +125,11 @@ export default function Navbar() {
                   <MagnifyingGlassIcon className="size-6" />
                 </button>
               </div>
-
-              {/* Centered logo for mobile */}
               <div className="absolute left-1/2 transform -translate-x-1/2 lg:static lg:translate-x-0">
                 <Link to="/" className="text-lg font-semibold text-gray-800">
                   SyncRao
                 </Link>
               </div>
-
-              {/* Desktop Nav Links */}
               <div className="hidden lg:flex lg:items-center lg:space-x-8 ml-8">
                 {navigation.pages.map((page) => (
                   <Link
@@ -152,9 +142,7 @@ export default function Navbar() {
                 ))}
               </div>
 
-              {/* Right section */}
               <div className="ml-auto flex items-center">
-                {/* Desktop search button */}
                 <div className="hidden lg:flex lg:ml-6">
                   <button
                     className="p-2 text-gray-500 hover:text-gray-800"
@@ -164,14 +152,12 @@ export default function Navbar() {
                   </button>
                 </div>
 
-                {/* Wishlist */}
                 <div className="ml-4">
                   <Link to="/wishlist">
                     <HeartIcon className="size-6 text-gray-500 hover:text-red-800" />
                   </Link>
                 </div>
 
-                {/* Cart */}
                 <Link to="/cart" className="ml-4 relative">
                   <ShoppingBagIcon className="size-6 text-gray-500 hover:text-gray-800" />
                   <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[12px] font-bold text-white">
@@ -179,7 +165,6 @@ export default function Navbar() {
                   </span>
                 </Link>
 
-                {/* Desktop profile only */}
                 {authTokens && (
                   <div className="hidden lg:flex ml-4">
                     <Link to="/profile">
@@ -191,7 +176,6 @@ export default function Navbar() {
             </div>
           </nav>
 
-          {/* Search dropdown */}
           {searchOpen && (
             <div className="absolute left-0 right-0 bg-white border-t shadow-lg px-4 sm:px-6 lg:px-8 z-50">
               <div className="max-w-3xl mx-auto py-2 relative">
@@ -200,7 +184,7 @@ export default function Navbar() {
                   placeholder="Search for products..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-black outline-none"
                   autoFocus
                 />
                 <button

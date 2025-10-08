@@ -4,7 +4,7 @@ export default {
     extend: {
       colors: {
         brand: {
-          black: "#2c2c2c", 
+          black: "#000000", 
           green: "#4caf50", 
           red: "#d32f2f", 
           orange: "#ff9800", 
@@ -17,6 +17,7 @@ export default {
           highlightText: "#ffffff", 
           contentBg: "#ffffff",
           subtext: "#777777",
+          title: "#8d605d",
         },
       },
     },

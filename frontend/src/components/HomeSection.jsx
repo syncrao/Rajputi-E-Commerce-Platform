@@ -23,8 +23,8 @@ export default function HomeSection({ title, items, loading }) {
   return (
     <div className="px-4 mb-10 lg:mb-24 lg:px-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-        <Link to="/products" className="text-indigo-600 hover:underline">
+        <h2 className="text-2xl text-brand-title">{title}</h2>
+        <Link to="/products" className="text-brand-black font-semibold hover:underline">
           See All
         </Link>
       </div>

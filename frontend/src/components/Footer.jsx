@@ -1,20 +1,18 @@
 export default function Footer() {
   return (
-    <footer className="bg-brand-black text-brand-primaryText mt-4">
-      <div className="mx-auto max-w-7xl px-6 py-12 sm:px-12 lg:px-16">
+    <footer className="text-brand-secondaryText bg-brand-secondary mt-4 border-t border-gray-200">
+      <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Brand */}
           <div>
-            <h2 className="text-xl font-bold text-brand-blue">SyncRao</h2>
-            <p className="mt-4 text-sm text-brand-primaryText">
+            <h2 className="text-xl font-bold text-brand-black">SyncRao</h2>
+            <p className="mt-4 text-sm ">
               Your one-stop destination for fashion, accessories, and more.
               Quality products at the best prices.
             </p>
           </div>
 
-          {/* Shop */}
           <div>
-            <h3 className="text-sm font-semibold text-brand-orange uppercase tracking-wider">
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
               Shop
             </h3>
             <ul className="mt-4 space-y-3">
@@ -25,9 +23,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
-            <h3 className="text-sm font-semibold text-brand-orange uppercase tracking-wider">
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
               Support
             </h3>
             <ul className="mt-4 space-y-3">
@@ -38,13 +35,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Social */}
           <div>
-            <h3 className="text-sm font-semibold text-brand-orange uppercase tracking-wider">
+            <h3 className="text-sm font-semibold uppercase tracking-wider">
               Follow Us
             </h3>
             <div className="mt-4 flex space-x-6">
-              {/* Social Icons */}
               <a href="#" className="hover:text-brand-blue" aria-label="Facebook">
                 <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
                   <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.13 8.44 9.88v-6.99h-2.54V12h2.54V9.79c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99C18.34 21.13 22 17 22 12z"/>
@@ -64,8 +59,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-12 border-t border-brand-blue pt-6 text-center text-sm text-brand-primaryText">
+        <div className="mt-12 border-t border-brand-black pt-6 text-center text-sm">
           <p>&copy; {new Date().getFullYear()} SyncRao. All rights reserved.</p>
         </div>
       </div>

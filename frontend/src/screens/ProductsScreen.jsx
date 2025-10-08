@@ -52,7 +52,7 @@ export default function ProductsScreen() {
                   {/* Wishlist Button */}
                   <button
                     onClick={() => handleWishlistToggle(product)}
-                    className="absolute top-2 right-2 p-1 rounded-full shadow hover:bg-gray-100\ z-10"
+                    className="absolute top-2 right-2 p-1 rounded-full shadow hover:bg-gray-100\ z-1"
                   >
                     {isInWishlist ? (
                       <SolidHeart className="w-6 h-6 text-red-500" />
@@ -63,7 +63,7 @@ export default function ProductsScreen() {
 
                   <Link
                     to={`/product/${product.id}`}
-                    className="block rounded-lg overflow-hidden"
+                    className="block overflow-hidden"
                   >
                     {product.mrp && product.price < product.mrp && (
                       <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded z-0">

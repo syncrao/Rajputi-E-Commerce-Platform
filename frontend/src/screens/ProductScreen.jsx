@@ -6,7 +6,10 @@ import { addToCart } from "../slices/cartSlice";
 import { addToWishlist, removeFromWishlist } from "../slices/wishlistSlice";
 import { getRequest } from "../utils/request";
 import toast from "react-hot-toast";
-import { HeartIcon as OutlineHeart, HeartIcon as SolidHeart } from "@heroicons/react/24/outline";
+import {
+  HeartIcon as OutlineHeart,
+  HeartIcon as SolidHeart,
+} from "@heroicons/react/24/outline";
 
 export default function ProductScreen() {
   const { id } = useParams();
@@ -70,7 +73,6 @@ export default function ProductScreen() {
   return (
     <div className="max-w-5xl mx-auto p-6">
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Product Images */}
         <div className="space-y-4 relative">
           <img
             src={selectedImage}
@@ -78,7 +80,7 @@ export default function ProductScreen() {
             className="w-full object-cover shadow rounded"
           />
           <button
-            className="absolute top-2 right-2 p-2 rounded-full bg-white shadow hover:bg-gray-100"
+            className="absolute top-0.5 right-2 p-2 rounded-full  shadow hover:bg-gray-100"
             onClick={handleWishlistToggle}
           >
             {isInWishlist ? (
@@ -103,8 +105,6 @@ export default function ProductScreen() {
             ))}
           </div>
         </div>
-
-        {/* Product Details */}
         <div className="space-y-4">
           <h1 className="text-2xl font-bold">{product.name}</h1>
           <p className="text-gray-600">{product.description}</p>
@@ -129,6 +129,16 @@ export default function ProductScreen() {
 
           <div>
             <h3 className="font-semibold mb-1">Select Variant:</h3>
+            {inventory.length === 0 && (
+              <div className="flex gap-2 flex-wrap">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-20 h-8 rounded bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"
+                  ></div>
+                ))}
+              </div>
+            )}
             <div className="flex gap-2 flex-wrap">
               {inventory.map((obj) => (
                 <span
@@ -150,10 +160,9 @@ export default function ProductScreen() {
             </div>
           </div>
 
-          {/* Add to Cart */}
-          <div className="mt-4 flex gap-3">
+          <div className="mt-4 w-full flex gap-3">
             <button
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+              className="bg-brand-secondaryText text-white border-2 border-black px-6 py-3 w-full rounded-lg hover:bg-black"
               onClick={handleAddToCart}
             >
               Add to Cart
