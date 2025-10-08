@@ -6,13 +6,13 @@ export default function AddressScreen() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Authentication from localStorage
   const authTokens = JSON.parse(localStorage.getItem("authToken"));
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     full_name: "",
@@ -27,7 +27,6 @@ export default function AddressScreen() {
 
   const redirectBack = location.state?.fromCheckout || false;
 
-  // ✅ Fetch addresses from API
   useEffect(() => {
     if (!authTokens) {
       navigate("/login");
@@ -49,7 +48,6 @@ export default function AddressScreen() {
     }
   };
 
-  // ✅ Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -58,7 +56,6 @@ export default function AddressScreen() {
     }));
   };
 
-  // ✅ Reset form after add/edit
   const resetForm = () => {
     setFormData({
       full_name: "",
@@ -71,12 +68,12 @@ export default function AddressScreen() {
       is_default: false,
     });
     setEditingId(null);
-    setShowModal(false);
+    setShowForm(false);
   };
 
-  // ✅ Add or update address
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setBtnLoading(true);
     try {
       if (editingId) {
         await putRequest(`orders/addresses/${editingId}/`, formData, authTokens.access);
@@ -87,10 +84,11 @@ export default function AddressScreen() {
       resetForm();
     } catch (err) {
       console.error("Failed to save address:", err);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
-  // ✅ Delete address
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this address?")) return;
     try {
@@ -101,7 +99,6 @@ export default function AddressScreen() {
     }
   };
 
-  // ✅ Edit existing address
   const handleEdit = (addr) => {
     setEditingId(addr.id);
     setFormData({
@@ -114,107 +111,59 @@ export default function AddressScreen() {
       country: addr.country,
       is_default: addr.is_default,
     });
-    setShowModal(true);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ✅ Select address for checkout
   const handleSelectAddress = (addr) => {
     localStorage.setItem(`selected_address_user_${userInfo?.id}`, JSON.stringify(addr));
     if (redirectBack) navigate("/checkout");
   };
 
   return (
-    <div className="p-6 min-h-screen max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">My Addresses</h2>
+    <div className="min-h-screen flex flex-col items-center justify-start p-6 ">
+      <div className="w-full max-w-2xl">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">
+            {showForm ? (editingId ? "Edit Address" : "Add New Address") : "My Addresses"}
+          </h2>
 
-      {loading && <p>Loading...</p>}
-
-      {/* Address List */}
-      <div className="space-y-3 mb-24">
-        {addresses.length === 0 ? (
-          <p className="text-gray-500">No addresses found.</p>
-        ) : (
-          addresses.map((addr) => (
-            <div
-              key={addr.id}
-              className={`p-4 border rounded-lg flex justify-between items-start ${
-                addr.is_default ? "border-blue-500" : "border-gray-300"
-              }`}
+          {!showForm && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow"
             >
-              <div>
-                <p className="font-semibold">{addr.full_name}</p>
-                <p>
-                  {addr.street}, {addr.city}, {addr.state} - {addr.postal_code}
-                </p>
-                <p>{addr.country}</p>
-                <p className="text-sm text-gray-500">📞 {addr.phone}</p>
-                {addr.is_default && (
-                  <span className="text-xs text-blue-600 font-medium">Default</span>
-                )}
-              </div>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => handleEdit(addr)}
-                  className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(addr.id)}
-                  className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => handleSelectAddress(addr)}
-                  className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  {redirectBack ? "Select for Checkout" : "Select Address"}
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              + Add New
+            </button>
+          )}
+        </div>
 
-      {/* Add New Address Button */}
-      <div className="fixed bottom-4 left-0 w-full flex justify-center">
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 shadow-lg"
-        >
-          Add New Address
-        </button>
-      </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
-            <h3 className="text-lg font-semibold mb-4">
-              {editingId ? "Edit Address" : "Add New Address"}
-            </h3>
-
-            <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Form View */}
+        {showForm ? (
+          <div className="">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {[
-                "full_name",
-                "phone",
-                "street",
-                "city",
-                "state",
-                "postal_code",
-                "country",
+                { name: "full_name", label: "Full Name" },
+                { name: "phone", label: "Phone Number" },
+                { name: "street", label: "Address" },
+                { name: "city", label: "City" },
+                { name: "state", label: "State" },
+                { name: "postal_code", label: "Postal Code" },
+                { name: "country", label: "Country" },
               ].map((field) => (
-                <input
-                  key={field}
-                  type="text"
-                  name={field}
-                  placeholder={field.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                  value={formData[field]}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required={field !== "country"}
-                />
+                <div key={field.name}>
+                  <label className="block text-sm font-medium mb-1">{field.label}</label>
+                  <input
+                    type="text"
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    placeholder={field.label}
+                    className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-black"
+                    required={field.name !== "country"}
+                  />
+                </div>
               ))}
 
               <label className="flex items-center space-x-2">
@@ -227,25 +176,94 @@ export default function AddressScreen() {
                 <span>Set as default</span>
               </label>
 
-              <div className="flex gap-2 justify-end">
+              <div className="flex gap-2 mt-4">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  disabled={btnLoading}
+                  className={`flex-1 flex justify-center items-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${
+                    btnLoading ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
                 >
-                  {editingId ? "Update" : "Save"}
+                  {btnLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : editingId ? (
+                    "Update Address"
+                  ) : (
+                    "Save Address"
+                  )}
                 </button>
+
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+                  className="flex-1 bg-gray-400 text-white py-2 rounded-lg hover:bg-gray-500 transition"
                 >
                   Cancel
                 </button>
               </div>
             </form>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            {/* Loader */}
+            {loading && (
+              <div className="flex justify-center items-center py-10">
+                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+
+            {/* Address List */}
+            {!loading && (
+              <div className="space-y-4">
+                {addresses.length === 0 ? (
+                  <p className="text-gray-500 text-center">No addresses found.</p>
+                ) : (
+                  addresses.map((addr) => (
+                    <div
+                      key={addr.id}
+                      className={`p-4 border rounded-lg bg-white shadow-sm transition hover:shadow-md ${
+                        addr.is_default ? "border-blue-500" : "border-gray-300"
+                      }`}
+                    >
+                      <p className="font-semibold text-lg">{addr.full_name}</p>
+                      <p className="text-gray-700">
+                        {addr.street}, {addr.city}, {addr.state} - {addr.postal_code}, {addr.country}
+                      </p>
+                    
+                      <p className="text-sm text-gray-500 mt-1">📞 {addr.phone}</p>
+                      {addr.is_default && (
+                        <span className="text-xs text-blue-600 font-medium mt-1 inline-block">
+                          Default Address
+                        </span>
+                      )}
+                      <div className="flex justify-end gap-2 mt-4">
+                        <button
+                          onClick={() => handleEdit(addr)}
+                          className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(addr.id)}
+                          className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => handleSelectAddress(addr)}
+                          className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                        >
+                          Select
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

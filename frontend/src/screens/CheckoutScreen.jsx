@@ -20,7 +20,9 @@ export default function CheckoutScreen() {
       return;
     }
 
-    const savedAddress = localStorage.getItem(`selected_address_user_${userInfo?.id}`);
+    const savedAddress = localStorage.getItem(
+      `selected_address_user_${userInfo?.id}`
+    );
     if (savedAddress) {
       setSelectedAddress(JSON.parse(savedAddress));
     } else {
@@ -91,23 +93,22 @@ export default function CheckoutScreen() {
     <div className="max-w-5xl mx-auto p-6 pb-24 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
-      <div className="mb-6 p-4 border rounded-lg flex justify-between items-center">
+      <div className="mb-6 p-4 border rounded-lg items-center">
         {selectedAddress ? (
           <div>
             <p className="font-semibold">{selectedAddress.full_name}</p>
             <p>
-              {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.state} -{" "}
-              {selectedAddress.postal_code}
+              {selectedAddress.street}, {selectedAddress.city},{" "}
+              {selectedAddress.state}, {selectedAddress.postal_code},{" "}
+              {selectedAddress.country}, 📞 {selectedAddress.phone}
             </p>
-            <p>{selectedAddress.country}</p>
-            <p className="text-sm text-gray-500">📞 {selectedAddress.phone}</p>
           </div>
         ) : (
           <p className="text-gray-500">No address selected.</p>
         )}
         <button
           onClick={handleChangeAddress}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 mt-2 border border-gray-400 bg-gray-100 w-full rounded hover:bg-gray-200"
         >
           {selectedAddress ? "Change Address" : "Add Address"}
         </button>
