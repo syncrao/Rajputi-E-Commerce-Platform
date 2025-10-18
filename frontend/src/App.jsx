@@ -23,6 +23,8 @@ import PaymentScreen from "./screens/PaymentScreen";
 import OrderScreen from "./screens/OrderScreen";
 import WishlistScreen from "./screens/WishlistScreen";
 
+import Test from "./screens/Test"
+
 
 export default function App() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
 
         <Route path="orders" element={<OrderScreen />} />
         <Route path="wishlist" element={<WishlistScreen />} />
+
+        <Route path="test" element={<Test />} />
       </Route>
     </Routes>
   );

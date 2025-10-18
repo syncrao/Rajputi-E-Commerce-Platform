@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, ProductImage
+from .models import Product, ProductImage, ProductRating
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -27,3 +27,12 @@ class ProductListSerializer(serializers.ModelSerializer):
             "fabric",
             "images",
         ]
+
+
+class ProductRatingSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = ProductRating
+        fields = ["id", "user", "rating", "review", "created_at"]
+        read_only_fields = ["id", "user", "created_at"]

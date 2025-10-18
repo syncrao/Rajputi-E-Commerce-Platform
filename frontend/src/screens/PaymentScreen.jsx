@@ -20,24 +20,34 @@ export default function PaymentScreen() {
   }, [id, authTokens]);
 
   const handlePayment = async () => {
-    if (!order) return;
-    setPaying(true);
-    try {
-      const res = await postRequest(
-        `payments/pay/${order.id}/`,
-        {},
-        authTokens.access
-      );
+  if (!order) return;
+  setPaying(true);
+  try {
+    const res = await postRequest(
+      `payments/mock/${order.id}/`,
+      {},
+      authTokens.access
+    );
+
+    console.log("PhonePe response:", res);
+
+    if (res.success && res.checkout_url) {
+      // Redirect user to PhonePe test payment page
+      window.location.href = res.checkout_url;
+    } else if (res.transaction_id) {
+      // Fallback (in case checkout_url missing)
       alert(`✅ Payment successful! Transaction ID: ${res.transaction_id}`);
-      const updatedOrder = await getRequest(`orders/${id}/`, authTokens.access);
-      setOrder(updatedOrder);
-    } catch (err) {
-      console.error(err);
-      alert(err?.error || "Payment failed");
-    } finally {
-      setPaying(false);
+    } else {
+      alert("Something went wrong while initiating payment.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert(err?.error || "Payment failed");
+  } finally {
+    setPaying(false);
+  }
+};
+
 
   if (loading)
     return (
