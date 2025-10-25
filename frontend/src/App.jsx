@@ -39,7 +39,7 @@ export default function App() {
         <Route path="profile" element={<ProfileScreen />} />
         <Route path="editProfile" element={<EditProfileScreen />} />
 
-        <Route path="products" element={<ProductsScreen />} />
+        <Route path="products/:category" element={<ProductsScreen />} />
         <Route path="product/:id" element={<ProductScreen />} />
 
         <Route path="cart" element={<CartScreen />} />

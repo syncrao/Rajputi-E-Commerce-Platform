@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 const navigation = {
   pages: [
-    { name: "Products", href: "/products" },
+    { name: "Products", href: "/products/all" },
     { name: "My Orders", href: "/orders" },
   ],
 };
@@ -38,42 +38,43 @@ export default function Navbar() {
   }, [query, products]);
 
   return (
-    <div className="bg-white">
+    <div className="bg-brand-contentBg text-brand-secondaryText">
+      {/* Mobile Menu */}
       <Dialog open={open} onClose={setOpen} className="relative z-50 lg:hidden">
-        <DialogBackdrop className="fixed inset-0 bg-black/25" />
+        <DialogBackdrop className="fixed inset-0 bg-brand-black/40" />
         <div className="fixed inset-0 z-40 flex">
-          <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
+          <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-brand-contentBg pb-12 shadow-xl">
             <div className="flex px-4 pt-5 pb-2">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="p-2 text-gray-400"
+                className="p-2 text-brand-liteGray hover:text-brand-black"
               >
                 <XMarkIcon className="size-6" />
               </button>
             </div>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+            <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
               {navigation.pages.map((page) => (
                 <Link
                   key={page.name}
                   to={page.href}
                   onClick={() => setOpen(false)}
-                  className="block p-2 font-medium text-gray-900"
+                  className="block p-2 font-medium text-brand-title hover:text-brand-primary"
                 >
                   {page.name}
                 </Link>
               ))}
             </div>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+            <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
               {authTokens ? (
                 <Link
                   to="/profile"
                   onClick={() => setOpen(false)}
-                  className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-800"
+                  className="flex items-center space-x-2 text-sm font-medium text-brand-secondaryText hover:text-brand-primary"
                 >
-                  <UserIcon className="size-6 text-gray-500" />
+                  <UserIcon className="size-6 text-brand-liteGray" />
                   <span>Profile</span>
                 </Link>
               ) : (
@@ -81,14 +82,14 @@ export default function Navbar() {
                   <Link
                     to="/login"
                     onClick={() => setOpen(false)}
-                    className="block p-2 font-medium text-gray-900"
+                    className="block p-2 font-medium text-brand-title hover:text-brand-primary"
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setOpen(false)}
-                    className="block p-2 font-medium text-gray-900"
+                    className="block p-2 font-medium text-brand-title hover:text-brand-primary"
                   >
                     Create account
                   </Link>
@@ -98,54 +99,61 @@ export default function Navbar() {
           </DialogPanel>
         </div>
       </Dialog>
-      <div className="border-b border-gray-200 w-full z-10 fixed top-0 left-0 bg-white">
-        <header className="relative bg-white">
-          <p className="flex h-6 items-center justify-center border-b px-4 text-sm text-gray-600">
-            Get free delivery on orders over ₹499
-          </p>
 
+      {/* Desktop Navbar */}
+      <div className="border-b border-brand-liteGray/30 w-full z-10 fixed top-0 left-0 bg-brand-contentBg">
+        <header className="relative">
           <nav
             aria-label="Top"
             className="px-4 sm:px-6 lg:px-8 transition-all duration-100"
           >
             <div className="flex h-14 items-center relative">
+              {/* Mobile buttons */}
               <div className="flex items-center lg:hidden">
                 <button
                   type="button"
                   onClick={() => setOpen(true)}
-                  className="p-2 text-gray-400"
+                  className="p-2 text-brand-liteGray hover:text-brand-black"
                 >
                   <Bars3Icon className="size-6" />
                 </button>
 
                 <button
-                  className="ml-2 p-2 text-gray-400 hover:text-gray-500"
+                  className="ml-2 p-2 text-brand-liteGray hover:text-brand-black"
                   onClick={() => setSearchOpen((s) => !s)}
                 >
                   <MagnifyingGlassIcon className="size-6" />
                 </button>
               </div>
+
+              {/* Logo */}
               <div className="absolute left-1/2 transform -translate-x-1/2 lg:static lg:translate-x-0">
-                <Link to="/" className="text-lg font-semibold text-gray-800">
+                <Link
+                  to="/"
+                  className="text-lg font-bold text-brand-title tracking-wide"
+                >
                   SyncRao
                 </Link>
               </div>
+
+              {/* Navigation links */}
               <div className="hidden lg:flex lg:items-center lg:space-x-8 ml-8">
                 {navigation.pages.map((page) => (
                   <Link
                     key={page.name}
                     to={page.href}
-                    className="text-sm text-gray-500 hover:text-gray-800"
+                    className="text-sm text-brand-subtext hover:text-brand-primary transition"
                   >
                     {page.name}
                   </Link>
                 ))}
               </div>
 
+              {/* Right-side icons */}
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:ml-6">
                   <button
-                    className="p-2 text-gray-500 hover:text-gray-800"
+                    className="p-2 text-brand-liteGray hover:text-brand-black"
                     onClick={() => setSearchOpen((s) => !s)}
                   >
                     <MagnifyingGlassIcon className="size-6" />
@@ -154,13 +162,13 @@ export default function Navbar() {
 
                 <div className="ml-4">
                   <Link to="/wishlist">
-                    <HeartIcon className="size-6 text-gray-500 hover:text-red-800" />
+                    <HeartIcon className="size-6 text-brand-liteGray hover:text-red-700 transition" />
                   </Link>
                 </div>
 
                 <Link to="/cart" className="ml-4 relative">
-                  <ShoppingBagIcon className="size-6 text-gray-500 hover:text-gray-800" />
-                  <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[12px] font-bold text-white">
+                  <ShoppingBagIcon className="size-6 text-brand-liteGray hover:text-brand-black" />
+                  <span className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-[12px] font-bold text-brand-primaryText">
                     {cartItems.length}
                   </span>
                 </Link>
@@ -168,7 +176,7 @@ export default function Navbar() {
                 {authTokens && (
                   <div className="hidden lg:flex ml-4">
                     <Link to="/profile">
-                      <UserIcon className="size-6 text-gray-500 hover:text-gray-800" />
+                      <UserIcon className="size-6 text-brand-liteGray hover:text-brand-black" />
                     </Link>
                   </div>
                 )}
@@ -176,15 +184,16 @@ export default function Navbar() {
             </div>
           </nav>
 
+          {/* Search dropdown */}
           {searchOpen && (
-            <div className="absolute left-0 right-0 bg-white border-t shadow-lg px-4 sm:px-6 lg:px-8 z-50">
+            <div className="absolute left-0 right-0 bg-brand-contentBg border-t border-brand-liteGray/30 shadow-lg px-4 sm:px-6 lg:px-8 z-50">
               <div className="max-w-3xl mx-auto py-2 relative">
                 <input
                   type="text"
                   placeholder="Search for products..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-black outline-none"
+                  className="w-full p-2 border border-brand-liteGray rounded-md focus:ring-2 focus:ring-brand-primary outline-none"
                   autoFocus
                 />
                 <button
@@ -192,19 +201,19 @@ export default function Navbar() {
                     setSearchOpen(false);
                     setQuery("");
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-liteGray hover:text-brand-black"
                 >
                   <XMarkIcon className="size-5" />
                 </button>
 
                 {query && (
-                  <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg max-h-80 overflow-y-auto">
+                  <div className="absolute mt-2 w-full bg-brand-contentBg border border-brand-liteGray rounded-lg shadow-lg max-h-80 overflow-y-auto">
                     {filtered.length > 0 ? (
                       filtered.map((product) => (
                         <Link
                           key={product.id}
                           to={`/product/${product.id}`}
-                          className="flex items-center gap-3 p-2 hover:bg-gray-100"
+                          className="flex items-center gap-3 p-2 hover:bg-brand-secondary transition"
                           onClick={() => {
                             setSearchOpen(false);
                             setQuery("");
@@ -219,17 +228,17 @@ export default function Navbar() {
                             className="w-10 h-10 object-cover rounded-md"
                           />
                           <div>
-                            <p className="text-sm font-medium text-gray-800">
+                            <p className="text-sm font-medium text-brand-title">
                               {product.name}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-brand-subtext">
                               ₹{product.price} | {product.category}
                             </p>
                           </div>
                         </Link>
                       ))
                     ) : (
-                      <p className="text-center text-gray-500 p-3">
+                      <p className="text-center text-brand-subtext p-3">
                         No results found for “{query}”
                       </p>
                     )}
@@ -241,7 +250,8 @@ export default function Navbar() {
         </header>
       </div>
 
-      <div className="h-20" />
+      {/* Spacer to avoid overlap */}
+      <div className="h-14" />
     </div>
   );
 }

@@ -14,10 +14,10 @@ export default function HomeScreen() {
     <div className="min-h-screen bg-white">
       <HomeHero/>
       <HomeCategory/>
-      <HomeSection title="Latest Suits" items={suits} loading={loading} />
-      <HomeSection title="Latest Lehenga" items={lehenga} loading={loading} />
-      <HomeSection title="Latest Poshak" items={poshak} loading={loading} />
-      <HomeSection title="Latest Dupatta" items={duppata} loading={loading} />
+      <HomeSection title="Latest Suits" items={suits} category="Suit" loading={loading} />
+      <HomeSection title="Latest Lehenga" items={lehenga} category="Lehenga" loading={loading} />
+      <HomeSection title="Latest Poshak" items={poshak} category="Poshak" loading={loading} />
+      <HomeSection title="Latest Dupatta" items={duppata} category="Dupatta" loading={loading} />
     </div>
   );
 }

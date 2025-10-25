@@ -1,20 +1,23 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProducts } from "../slices/productSlice";
 import { SkeletonCard } from "../components/HomeSection";
 import { addToWishlist, removeFromWishlist } from "../slices/wishlistSlice";
 import { HeartIcon as OutlineHeart, HeartIcon as SolidHeart } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import { X } from "lucide-react";
 
 export default function ProductsScreen() {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
   const { products: wishlist } = useSelector((state) => state.wishlist);
+  const { category } = useParams();
+  const filterProducts = category === "all" ? products : products.filter((obj) => obj.category.toLowerCase() === category);
 
   useEffect(() => {
     if (!products || products.length === 0) {
-      dispatch(getProducts());
+      dispatch(getProducts());1
     }
   }, [dispatch, products]);
 
@@ -41,7 +44,7 @@ export default function ProductsScreen() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
         {loading
           ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-          : products.map((product) => {
+          : filterProducts.map((product) => {
               const mainImage =
                 product.images.find((img) => img.is_main)?.image ||
                 product.images[0]?.image;
