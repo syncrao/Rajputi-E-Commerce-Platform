@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { getRequest } from "../utils/request";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 import dayjs from "dayjs";
 
 export default function OrderScreen() {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const authTokens = JSON.parse(localStorage.getItem("authToken"));
 
   useEffect(() => {
     if (!authTokens?.access) return;
+    setLoading(true);
     getRequest("orders", authTokens.access)
       .then((res) => {
         setOrders(res);
@@ -23,32 +25,7 @@ export default function OrderScreen() {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <svg
-          className="animate-spin h-8 w-8 text-blue-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8z"
-          ></path>
-        </svg>
-      </div>
-    );
-  }
+  if (loading) return <Loader/>
 
   if (orders.length === 0) {
     return (

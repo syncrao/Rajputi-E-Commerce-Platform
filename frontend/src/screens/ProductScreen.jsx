@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 
+
 export default function ProductScreen() {
   const { id } = useParams();
   const navigate = useNavigate();

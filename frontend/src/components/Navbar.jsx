@@ -151,7 +151,7 @@ export default function Navbar() {
                   to="/"
                   className="text-lg font-bold text-brand-title tracking-wide"
                 >
-                  SyncRao
+                  Raj Suits
                 </Link>
               </div>
 
