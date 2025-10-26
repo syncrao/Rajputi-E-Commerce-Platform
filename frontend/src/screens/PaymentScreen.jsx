@@ -97,7 +97,7 @@ export default function PaymentScreen() {
 
       {/* Payment Section */}
       {order.status === "pending" ? (
-        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-lg p-4 flex justify-between items-center">
+        <div className="fixed bottom-0 z-50 left-0 w-full bg-white border-t border-gray-200 shadow-lg p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-gray-800">
             Total: ₹{order.total_price}
           </h2>

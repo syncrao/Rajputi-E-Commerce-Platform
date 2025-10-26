@@ -39,7 +39,7 @@ export default function CartScreen() {
     return (
       <div className="max-w-5xl mx-auto p-6 text-center">
         <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-        <Link to="/products" className="text-indigo-600 hover:underline">
+        <Link to="/products/all" className="text-indigo-600 hover:underline">
           Continue Shopping
         </Link>
       </div>
@@ -90,7 +90,7 @@ export default function CartScreen() {
         ))}
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex justify-between items-center shadow-lg">
+      <div className="fixed z-50 bottom-0 left-0 w-full bg-white p-4 border-t flex justify-between items-center shadow-lg">
         <h2 className="text-xl font-bold">Total: ₹{totalPrice}</h2>
         <Link
           to="/checkout"

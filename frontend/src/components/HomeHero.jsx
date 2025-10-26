@@ -24,7 +24,7 @@ export default function HomeHero() {
   }, [desktopImages.length]);
 
   return (
-    <Link to="products"  className="relative w-full overflow-hidden">
+    <Link to="products/all"  className="relative w-full overflow-hidden">
       {desktopImages.map((img, index) => (
         <img
           key={index}

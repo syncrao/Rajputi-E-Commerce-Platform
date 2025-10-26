@@ -27,7 +27,7 @@ export default function HomeSection({ title, items, category, loading }) {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-brand-title">{title}</h2>
         <Link
-          to={`/product/${category}`}
+          to={`/products/${category}`}
           className="text-brand-primary font-semibold hover:underline"
         >
           See All

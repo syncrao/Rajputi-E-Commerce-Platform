@@ -9,7 +9,8 @@ import {
   UserIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../slices/authSlice";
 
 const navigation = {
   pages: [
@@ -25,6 +26,7 @@ export default function Navbar() {
   const { authTokens } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const { products } = useSelector((state) => state.products);
+  const dispatch = useDispatch()
 
   const filtered = useMemo(() => {
     if (!query.trim()) return [];
@@ -44,6 +46,7 @@ export default function Navbar() {
         <DialogBackdrop className="fixed inset-0 bg-brand-black/40" />
         <div className="fixed inset-0 z-40 flex">
           <DialogPanel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-brand-contentBg pb-12 shadow-xl">
+
             <div className="flex px-4 pt-5 pb-2">
               <button
                 type="button"
@@ -54,20 +57,7 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
-              {navigation.pages.map((page) => (
-                <Link
-                  key={page.name}
-                  to={page.href}
-                  onClick={() => setOpen(false)}
-                  className="block p-2 font-medium text-brand-title hover:text-brand-primary"
-                >
-                  {page.name}
-                </Link>
-              ))}
-            </div>
-
-            <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
+               <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
               {authTokens ? (
                 <Link
                   to="/profile"
@@ -96,6 +86,35 @@ export default function Navbar() {
                 </>
               )}
             </div>
+
+            <div className="space-y-6 border-t border-brand-liteGray/30 px-4 py-6">
+              {navigation.pages.map((page) => (
+                <Link
+                  key={page.name}
+                  to={page.href}
+                  onClick={() => setOpen(false)}
+                  className="block p-2 font-medium text-brand-title hover:text-brand-primary"
+                >
+                  {page.name}
+                </Link>
+              ))}
+            </div>
+
+     
+
+            {authTokens && (
+              <div className="mt-auto px-4 pb-6">
+                <button
+                  onClick={() => {
+                    dispatch(logout());
+                    setOpen(false);
+                  }}
+                  className="w-full bg-red-500 text-brand-primaryText font-semibold py-3 rounded-xl shadow-lg hover:bg-brand-highlight transition duration-300"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </DialogPanel>
         </div>
       </Dialog>
@@ -221,8 +240,8 @@ export default function Navbar() {
                         >
                           <img
                             src={
-                              product.images.find((img) => img.is_main)?.image ||
-                              product.images[0]?.image
+                              product.images.find((img) => img.is_main)
+                                ?.image || product.images[0]?.image
                             }
                             alt={product.name}
                             className="w-10 h-10 object-cover rounded-md"

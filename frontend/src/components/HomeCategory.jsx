@@ -12,7 +12,7 @@ export default function HomeCategory() {
     <div className="px-2 py-12">
       <div className="grid grid-cols-4 sm:grid-cols-4 gap-2">
         {categories.map((cat, i) => (
-          <Link to="products"  key={i} className="flex flex-col items-center rounded-lg">
+          <Link to="products/all/"  key={i} className="flex flex-col items-center rounded-lg">
             <img
               src={cat.img}
               alt={cat.name}
