@@ -60,8 +60,18 @@ export default function ProductScreen() {
 
   // Fetch inventory
   useEffect(() => {
-    getRequest(`products/inventory/${id}/`).then((res) => setInventory(res));
-  }, [id]);
+  getRequest(`products/inventory/${id}/`).then((res) => {
+    setInventory(res);
+
+    // ✅ Auto-select first available (in-stock) variant
+    const firstAvailable = res.find((item) => item.quantity > 0);
+    if (firstAvailable) {
+      setSelectedSize(firstAvailable.size);
+      setSelectedColor(firstAvailable.color);
+      setSelectedInventory(firstAvailable);
+    }
+  });
+}, [id]);
 
   // Fetch ratings
   useEffect(() => {
@@ -263,14 +273,30 @@ export default function ProductScreen() {
           </div>
 
           {/* Add to Cart Button */}
-          <div className="mt-4 w-full flex gap-3">
-            <button
-              className="bg-brand-primary text-brand-primaryText px-6 py-3 w-full rounded-lg hover:bg-brand-black transition"
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </button>
-          </div>
+          {/* Add to Cart / Out of Stock Button */}
+<div className="mt-4 w-full flex gap-3">
+  {inventory.length > 0 && inventory.every((obj) => obj.quantity === 0) ? (
+    <button
+      disabled
+      className="bg-gray-300 text-gray-600 px-6 py-3 w-full rounded-lg cursor-not-allowed"
+    >
+      Out of Stock
+    </button>
+  ) : (
+    <button
+      onClick={handleAddToCart}
+      disabled={!selectedSize || !selectedColor}
+      className={`px-6 py-3 w-full rounded-lg transition ${
+        !selectedSize || !selectedColor
+          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+          : "bg-brand-primary text-brand-primaryText hover:bg-brand-black"
+      }`}
+    >
+      Add to Cart
+    </button>
+  )}
+</div>
+
         </div>
       </div>
 
