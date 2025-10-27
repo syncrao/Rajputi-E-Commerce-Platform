@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { HeartIcon } from "@heroicons/react/24/outline";
+import { HeartIcon } from "@heroicons/react/24/solid";
 import { removeFromWishlist } from "../slices/wishlistSlice";
 
 export default function WishlistScreen() {
@@ -9,45 +9,70 @@ export default function WishlistScreen() {
 
   if (!products.length) {
     return (
-      <div className="flex items-center justify-center h-[70vh] text-gray-500 text-lg">
-        Your wishlist is empty.
+      <div className="flex flex-col items-center justify-center h-[70vh] text-brand-liteGray text-lg">
+        <p className="mb-4">Your wishlist is empty 💔</p>
+        <Link
+          to="/products/all"
+          className="px-5 py-2 bg-brand-primary text-brand-primaryText rounded-lg hover:bg-brand-black transition"
+        >
+          Continue Shopping
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-semibold mb-6">My Wishlist</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="max-w-6xl mx-auto px-4 py-8 bg-brand-contentBg">
+      <h1 className="text-2xl font-semibold mb-6 text-brand-title">
+        My Wishlist
+      </h1>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <div
             key={product.id}
-            className="border rounded-lg p-3 relative group hover:shadow-md transition-shadow"
+            className="relative rounded-xl overflow-hidden border border-brand-secondary hover:shadow-md transition group bg-brand-contentBg"
           >
-            <Link to={`/product/${product.id}`}>
-              <img
-                src={
-                  product.images.find((img) => img.is_main)?.image ||
-                  product.images[0]?.image
-                }
-                alt={product.name}
-                className="w-full h-56 object-cover rounded-md mb-2"
-              />
-              <h2 className="text-sm font-medium text-gray-800">
-                {product.name}
-              </h2>
-              <p className="text-xs text-gray-500">{product.category}</p>
-              <p className="text-sm font-semibold text-gray-900 mt-1">
-                ₹{product.price}
-              </p>
-            </Link>
-
+            {/* Remove Button */}
             <button
               onClick={() => dispatch(removeFromWishlist(product.id))}
-              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+              className="absolute top-3 right-3 bg-white rounded-full p-1 shadow-md hover:bg-red-100 transition"
             >
-              <HeartIcon className="w-6 h-6" />
+              <HeartIcon className="w-6 h-6 text-red-500" />
             </button>
+
+            {/* Product Image */}
+            <Link to={`/product/${product.id}`}>
+              <div className="overflow-hidden rounded-t-xl">
+                <img
+                  src={
+                    product.images.find((img) => img.is_main)?.image ||
+                    product.images[0]?.image
+                  }
+                  alt={product.name}
+                  className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+
+              {/* Product Info */}
+              <div className="p-3 space-y-1">
+                <h2 className="text-sm font-medium text-brand-title line-clamp-2">
+                  {product.name}
+                </h2>
+                <p className="text-xs text-brand-subtext">{product.category}</p>
+
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-brand-title font-semibold">
+                    ₹{product.price}
+                  </span>
+                  {product.mrp && product.mrp > product.price && (
+                    <span className="text-brand-liteGray line-through text-sm">
+                      ₹{product.mrp}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Link>
           </div>
         ))}
       </div>

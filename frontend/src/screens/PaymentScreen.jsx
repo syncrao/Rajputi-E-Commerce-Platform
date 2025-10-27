@@ -20,99 +20,105 @@ export default function PaymentScreen() {
   }, [id, authTokens]);
 
   const handlePayment = async () => {
-  if (!order) return;
-  setPaying(true);
-  try {
-    const res = await postRequest(
-      `payments/mock/${order.id}/`,
-      {},
-      authTokens.access
-    );
+    if (!order) return;
+    setPaying(true);
+    try {
+      const res = await postRequest(
+        `payments/mock/${order.id}/`,
+        {},
+        authTokens.access
+      );
 
-    console.log("PhonePe response:", res);
+      console.log("PhonePe response:", res);
 
-    if (res.success && res.checkout_url) {
-      // Redirect user to PhonePe test payment page
-      window.location.href = res.checkout_url;
-    } else if (res.transaction_id) {
-      // Fallback (in case checkout_url missing)
-      alert(`✅ Payment successful! Transaction ID: ${res.transaction_id}`);
-    } else {
-      alert("Something went wrong while initiating payment.");
+      if (res.success && res.checkout_url) {
+        window.location.href = res.checkout_url;
+      } else if (res.transaction_id) {
+        alert(`✅ Payment successful! Transaction ID: ${res.transaction_id}`);
+      } else {
+        alert("Something went wrong while initiating payment.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err?.error || "Payment failed");
+    } finally {
+      setPaying(false);
     }
-  } catch (err) {
-    console.error(err);
-    alert(err?.error || "Payment failed");
-  } finally {
-    setPaying(false);
-  }
-};
-
+  };
 
   if (loading)
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <div className="w-12 h-12 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-brand-liteGray border-t-brand-primary rounded-full animate-spin"></div>
       </div>
     );
 
   if (!order)
     return (
-      <div className="flex items-center justify-center h-[80vh] text-gray-600">
+      <div className="flex items-center justify-center h-[80vh] text-brand-subtext">
         Order not found
       </div>
     );
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Order #{order.id}</h1>
+    <div className="max-w-3xl mx-auto p-6 space-y-6 text-brand-secondaryText bg-brand-contentBg md:pb-12">
+      <h1 className="text-2xl font-bold text-brand-title">
+        Order #{order.id}
+      </h1>
 
-      {/* Address Section */}
-      <div className="p-5 border border-gray-200 rounded-xl shadow-sm bg-white">
-        <h2 className="font-semibold mb-3 text-gray-700">Shipping Address</h2>
-        <div className="space-y-1 text-gray-600">
+      {/* Shipping Address */}
+      <div className="p-5 border border-brand-liteGray rounded-xl bg-brand-secondary shadow-sm">
+        <h2 className="font-semibold mb-3 text-brand-title">
+          Shipping Address
+        </h2>
+        <div className="space-y-1 text-brand-subtext">
           <p>{order.address.full_name}</p>
           <p>
             {order.address.street}, {order.address.city},{" "}
             {order.address.state} - {order.address.postal_code}
           </p>
           <p>{order.address.country}</p>
-          <p className="text-sm text-gray-500">📞 {order.address.phone}</p>
+          <p className="text-sm text-brand-liteGray">
+            📞 {order.address.phone}
+          </p>
         </div>
       </div>
 
       {/* Order Items */}
-      <div className="p-5 border border-gray-200 rounded-xl shadow-sm bg-white">
-        <h2 className="font-semibold mb-3 text-gray-700">Order Items</h2>
-        <div className="divide-y">
+      <div className="p-5 border border-brand-liteGray rounded-xl bg-brand-secondary shadow-sm">
+        <h2 className="font-semibold mb-3 text-brand-title">Order Items</h2>
+        <div className="divide-y divide-brand-liteGray">
           {order.items.map((item) => (
-            <div key={item.id} className="flex justify-between py-3">
-              <span className="text-gray-700">Item #{item.id}</span>
-              <span className="text-gray-500">Qty: {item.quantity}</span>
-              <span className="font-medium text-gray-800">₹{item.price}</span>
+            <div
+              key={item.id}
+              className="flex justify-between py-3 text-brand-secondaryText"
+            >
+              <span>Item #{item.id}</span>
+              <span className="text-brand-subtext">Qty: {item.quantity}</span>
+              <span className="font-medium text-brand-title">₹{item.price}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Payment Section */}
+      {/* Desktop Payment Section */}
       {order.status === "pending" ? (
-        <div className="fixed bottom-0 z-50 left-0 w-full bg-white border-t border-gray-200 shadow-lg p-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="hidden md:flex justify-between items-center border-t border-brand-liteGray mt-8 pt-4">
+          <h2 className="text-xl font-semibold text-brand-title">
             Total: ₹{order.total_price}
           </h2>
           <button
             onClick={handlePayment}
             disabled={paying}
-            className={`px-6 py-3 rounded-lg text-white font-medium transition-all ${
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
               paying
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+                ? "bg-brand-liteGray text-brand-primaryText cursor-not-allowed"
+                : "bg-brand-primary text-brand-primaryText hover:opacity-90"
             }`}
           >
             {paying ? (
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <span className="w-5 h-5 border-2 border-brand-primaryText border-t-transparent rounded-full animate-spin"></span>
                 Processing...
               </div>
             ) : (
@@ -123,6 +129,33 @@ export default function PaymentScreen() {
       ) : (
         <div className="p-4 text-center bg-green-100 text-green-800 rounded-lg font-medium">
           ✅ Payment Completed
+        </div>
+      )}
+
+      {/* Mobile Fixed Bottom Payment Bar */}
+      {order.status === "pending" && (
+        <div className="fixed bottom-0 left-0 z-50 w-full bg-brand-contentBg border-t border-brand-liteGray shadow-lg p-4 flex justify-between items-center md:hidden">
+          <h2 className="text-lg font-semibold text-brand-title">
+            Total: ₹{order.total_price}
+          </h2>
+          <button
+            onClick={handlePayment}
+            disabled={paying}
+            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+              paying
+                ? "bg-brand-liteGray text-brand-primaryText cursor-not-allowed"
+                : "bg-brand-primary text-brand-primaryText hover:opacity-90"
+            }`}
+          >
+            {paying ? (
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 border-2 border-brand-primaryText border-t-transparent rounded-full animate-spin"></span>
+                Processing...
+              </div>
+            ) : (
+              "Pay Now"
+            )}
+          </button>
         </div>
       )}
     </div>

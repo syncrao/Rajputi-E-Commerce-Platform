@@ -12,7 +12,7 @@ export default function CheckoutScreen() {
   const { cartItems } = useSelector((state) => state.cart);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [loading, setLoading] = useState(false); // 🔹 Added loader state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!authTokens) {
@@ -39,16 +39,9 @@ export default function CheckoutScreen() {
     }
   }, [authTokens, navigate, userInfo]);
 
-  if (!cartItems || cartItems.length === 0) {
-    return (
-      <div className="max-w-5xl mx-auto p-6 text-center">
-        <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-        <Link to="/products" className="text-indigo-600 hover:underline">
-          Continue Shopping
-        </Link>
-      </div>
-    );
-  }
+  const handleChangeAddress = () => {
+    navigate("/address", { state: { fromCheckout: true } });
+  };
 
   const totalPrice = cartItems.reduce((acc, item) => {
     const price = Number(item.product.price) || 0;
@@ -58,12 +51,11 @@ export default function CheckoutScreen() {
 
   const handlePayment = async () => {
     if (!selectedAddress) {
-      alert("Please select a shipping address first.");
+      toast.error("Please select a shipping address first.");
       return;
     }
 
-    setLoading(true); // 🔹 Start loader
-
+    setLoading(true);
     const order = {
       address_id: selectedAddress.id,
       items: cartItems.map((obj) => ({
@@ -81,104 +73,123 @@ export default function CheckoutScreen() {
       toast.error("Something went wrong. Please try again.");
       console.error(error);
     } finally {
-      setLoading(false); // 🔹 Stop loader
+      setLoading(false);
     }
   };
 
-  const handleChangeAddress = () => {
-    navigate("/address", { state: { fromCheckout: true } });
-  };
+  if (!cartItems || cartItems.length === 0)
+    return (
+      <div className="max-w-5xl mx-auto p-6 text-center text-brand-secondaryText">
+        <h2 className="text-2xl font-bold mb-4 text-brand-title">
+          Your Cart is Empty
+        </h2>
+        <Link to="/products/all" className="text-brand-primary hover:underline">
+          Continue Shopping
+        </Link>
+      </div>
+    );
 
   return (
-    <div className="max-w-5xl mx-auto p-6 pb-24 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+    <div className="max-w-5xl mx-auto p-6 md:pb-20 min-h-screen bg-brand-contentBg text-brand-secondaryText">
+      <h1 className="text-2xl font-bold mb-6 text-brand-title">Checkout</h1>
 
-      <div className="mb-6 p-4 border rounded-lg items-center">
+      {/* Address Section */}
+      <div className="mb-6 p-4 border border-brand-liteGray rounded-lg bg-brand-secondary">
         {selectedAddress ? (
           <div>
-            <p className="font-semibold">{selectedAddress.full_name}</p>
-            <p>
+            <p className="font-semibold text-brand-title">
+              {selectedAddress.full_name}
+            </p>
+            <p className="text-brand-subtext">
               {selectedAddress.street}, {selectedAddress.city},{" "}
               {selectedAddress.state}, {selectedAddress.postal_code},{" "}
-              {selectedAddress.country}, 📞 {selectedAddress.phone}
+              {selectedAddress.country} 📞 {selectedAddress.phone}
             </p>
           </div>
         ) : (
-          <p className="text-gray-500">No address selected.</p>
+          <p className="text-brand-liteGray">No address selected.</p>
         )}
         <button
           onClick={handleChangeAddress}
-          className="px-4 py-2 mt-2 border border-gray-400 bg-gray-100 w-full rounded hover:bg-gray-200"
+          className="px-4 py-2 mt-3 w-full border border-brand-liteGray rounded bg-brand-contentBg hover:bg-brand-secondary transition text-brand-title"
         >
           {selectedAddress ? "Change Address" : "Add Address"}
         </button>
       </div>
 
+      {/* Cart Items */}
       <div className="space-y-4">
-        {cartItems.map((item, idx) => (
-          <div
-            key={idx}
-            className="flex items-center justify-between border p-4 rounded-lg"
-          >
-            <div className="flex items-center gap-4">
+        {cartItems.map((item, idx) => {
+          const price = Number(item.product.price) || 0;
+          const quantity = item.quantity || 1;
+          const total = price * quantity;
+          return (
+            <div
+              key={idx}
+              className="flex  sm:flex-row items-start gap-4 border border-brand-liteGray p-4 rounded-lg bg-brand-contentBg"
+            >
+              {/* Left - Image */}
               <img
                 src={item.product.images[0]?.image}
                 alt={item.product.name}
-                className="w-20 h-20 object-cover rounded"
+                className="w-20 object-cover rounded-md"
               />
-              <div>
-                <h2 className="font-semibold">{item.product.name}</h2>
-                <p>Size: {item.selectedInventory.size}</p>
-                <p>Color: {item.selectedInventory.color}</p>
-                <p>Price: ₹{item.product.price}</p>
-                <p>Quantity: {item.quantity}</p>
+
+              {/* Right - Details */}
+              <div className="flex flex-col justify-between w-full">
+                <div>
+                  <h2 className="font-semibold w-60 text-brand-title text-lg">
+                    {item.product.name}
+                  </h2>
+                  <p className="text-sm text-brand-secondaryText">
+                    Size: {item.selectedInventory.size}
+                  </p>
+                  <p className="text-sm text-brand-secondaryText">
+                    Color: {item.selectedInventory.color}
+                  </p>
+                  <p className="text-sm text-brand-subtext mt-1">
+                    Price: ₹{price} × {quantity}
+                  </p>
+                </div>
+
+                <p className="mt-3 font-semibold text-brand-title">
+                  Total: ₹{total}
+                </p>
               </div>
             </div>
-            <div>
-              <p className="font-bold text-lg">
-                ₹{Number(item.product.price) * item.quantity}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex justify-between items-center shadow-lg">
-        <h2 className="text-xl font-bold">Total: ₹{totalPrice}</h2>
+      {/* Desktop total + Checkout */}
+      <div className="hidden md:flex justify-between items-center border-t border-brand-liteGray mt-8 pt-4">
+        <h2 className="text-xl font-bold text-brand-title">
+          Total: ₹{totalPrice}
+        </h2>
         <button
           onClick={handlePayment}
           disabled={loading}
-          className={`flex items-center justify-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition ${
+          className={`flex items-center justify-center gap-2 bg-brand-primary text-brand-primaryText px-6 py-3 rounded-lg hover:opacity-90 transition ${
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
-          {loading ? (
-            <>
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                ></path>
-              </svg>
-              Processing...
-            </>
-          ) : (
-            "Checkout"
-          )}
+          {loading ? "Processing..." : "Checkout"}
+        </button>
+      </div>
+
+      {/* Mobile fixed button */}
+      <div className="fixed z-50 bottom-0 left-0 w-full bg-brand-contentBg p-4 border-t border-brand-liteGray flex justify-between items-center shadow-lg md:hidden">
+        <h2 className="text-lg font-bold text-brand-title">
+          Total: ₹{totalPrice}
+        </h2>
+        <button
+          onClick={handlePayment}
+          disabled={loading}
+          className={`flex items-center justify-center gap-2 bg-brand-primary text-brand-primaryText px-6 py-3 rounded-lg hover:opacity-90 transition ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? "Processing..." : "Checkout"}
         </button>
       </div>
     </div>
