@@ -10,23 +10,23 @@ export default function HomeScreen() {
   const lehenga = products.filter((obj) => obj.category == "Lehenga");
   const poshak = products.filter((obj) => obj.category == "Poshak");
   const duppata = products.filter((obj) => obj.category == "Dupatta");
+  const videoProducts = products.filter((obj) => obj.video);
 
   return (
     <div className="min-h-screen bg-white">
       <HomeHero />
       <HomeCategory />
-
-      
-      <div className="p-4">
-      
-
-        {products[0].video && (
-          <ReelSection
-            videoUrl={products[0].video}
-            thumbnailUrl={products[0].images[0]?.image} // main image
-          />
-        )}
-      </div>
+      {videoProducts.length > 0 && (
+        <div className="flex gap-4 overflow-x-auto p-4 scrollbar-hide">
+          {videoProducts.map((product) => (
+            <ReelSection
+              key={product.id || product._id}
+              videoUrl={product.video}
+              thumbnailUrl={product.images?.[0]?.image}
+            />
+          ))}
+        </div>
+      )}
       <HomeSection
         title="Latest Suits"
         items={suits}
