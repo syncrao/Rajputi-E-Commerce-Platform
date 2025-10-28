@@ -1,28 +1,56 @@
+import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 
-export default function ReelSection({ videoUrl }) {
+export default function ReelSection({ videoUrl, thumbnailUrl }) {
   const CLOUDINARY_BASE = "https://res.cloudinary.com/dhtj6kwtx/";
-  const normalizedVideoUrl = videoUrl.startsWith("http")
-    ? videoUrl
-    : CLOUDINARY_BASE + videoUrl;
+  const normalized = videoUrl.startsWith("http") ? videoUrl : CLOUDINARY_BASE + videoUrl;
+  const optimizedUrl = normalized.replace("/upload/", "/upload/q_auto,f_auto/");
 
-  // Cloudinary optimized playback
-  const optimizedUrl = normalizedVideoUrl.replace(
-    "/upload/",
-    "/upload/q_auto,f_auto/"
-  );
+  const ref = useRef();
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Observe horizontal visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.5,
+        root: document.querySelector("#reel-scroll-container"), // scroll container
+        rootMargin: "0px",
+      }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="w-40  rounded-2xl overflow-hidden shadow-lg">
-      <ReactPlayer
-        src={normalizedVideoUrl}
-        playing={true}    // auto play
-        loop={true}       // allow autoplay
-        controls={true}  // hide controls
-        width="100%"
-        height="auto"
-        playsinline
-      />
+    <div
+      ref={ref}
+      className="w-60 h-70 rounded-2xl overflow-hidden shadow-md flex-shrink-0 bg-black"
+    >
+      {isVisible ? (
+        <ReactPlayer
+          src={optimizedUrl}
+          playing
+          loop
+          muted
+          controls={false}
+          width="100%"
+          height="100%"
+          playsinline
+        />
+      ) : (
+        <img
+          src={thumbnailUrl}
+          alt="reel preview"
+          className="w-full h-full object-cover object-cover"
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }
