@@ -10,8 +10,8 @@ import {
   HeartIcon as OutlineHeart,
   HeartIcon as SolidHeart,
 } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
-
+import { StarIcon, PlayIcon } from "@heroicons/react/24/solid";
+import ReactPlayer from "react-player";
 
 export default function ProductScreen() {
   const { id } = useParams();
@@ -61,18 +61,16 @@ export default function ProductScreen() {
 
   // Fetch inventory
   useEffect(() => {
-  getRequest(`products/inventory/${id}/`).then((res) => {
-    setInventory(res);
-
-    // ✅ Auto-select first available (in-stock) variant
-    const firstAvailable = res.find((item) => item.quantity > 0);
-    if (firstAvailable) {
-      setSelectedSize(firstAvailable.size);
-      setSelectedColor(firstAvailable.color);
-      setSelectedInventory(firstAvailable);
-    }
-  });
-}, [id]);
+    getRequest(`products/inventory/${id}/`).then((res) => {
+      setInventory(res);
+      const firstAvailable = res.find((item) => item.quantity > 0);
+      if (firstAvailable) {
+        setSelectedSize(firstAvailable.size);
+        setSelectedColor(firstAvailable.color);
+        setSelectedInventory(firstAvailable);
+      }
+    });
+  }, [id]);
 
   // Fetch ratings
   useEffect(() => {
@@ -129,7 +127,6 @@ export default function ProductScreen() {
       toast.success("Thank you for your review!");
       setUserRating(0);
       setComment("");
-      // Refresh ratings
       const newRatings = await getRequest(
         `products/ratings/${id}/`,
         authTokens?.access
@@ -155,13 +152,30 @@ export default function ProductScreen() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-brand-contentBg text-brand-secondaryText">
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Left Side - Product Images */}
+        {/* Left Side */}
         <div className="space-y-4 relative">
-          <img
-            src={selectedImage}
-            alt={product.name}
-            className="w-full object-cover shadow rounded-lg border border-brand-secondary"
-          />
+          {selectedImage === "video" && product.video ? (
+            <ReactPlayer
+              src={
+                product.video.startsWith("http")
+                  ? product.video
+                  : `https://res.cloudinary.com/dhtj6kwtx/${product.video}`
+              }
+              playing
+              controls
+              loop
+              width="100%"
+              height="auto"
+              className="rounded-lg shadow border border-brand-secondary"
+            />
+          ) : (
+            <img
+              src={selectedImage}
+              alt={product.name}
+              className="w-full object-cover shadow rounded-lg border border-brand-secondary"
+            />
+          )}
+
           <button
             className="absolute top-2 right-3 p-2 rounded-full shadow-md hover:bg-brand-secondary transition"
             onClick={handleWishlistToggle}
@@ -173,7 +187,8 @@ export default function ProductScreen() {
             )}
           </button>
 
-          <div className="flex gap-3 mt-2">
+          {/* Thumbnails */}
+          <div className="flex gap-3 mt-2 overflow-x-auto">
             {product.images.map((img) => (
               <img
                 key={img.id}
@@ -187,10 +202,31 @@ export default function ProductScreen() {
                 onClick={() => setSelectedImage(img.image)}
               />
             ))}
+
+            {/* 🎥 Video Thumbnail */}
+            {product.video && (
+              <div
+                onClick={() => setSelectedImage("video")}
+                className={`w-20 h-20 rounded-lg flex items-center justify-center border cursor-pointer relative ${
+                  selectedImage === "video"
+                    ? "ring-2 ring-brand-black"
+                    : "hover:ring-1 hover:ring-brand-liteGray"
+                }`}
+              >
+                <img
+                  src={product.thumbnail || product.images[0]?.image}
+                  alt="Video thumbnail"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
+                  <PlayIcon className="w-8 h-8 text-white opacity-90" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Side - Details */}
+        {/* Right Side */}
         <div className="space-y-4">
           <h1 className="text-3xl font-bold text-brand-title">
             {product.name}
@@ -215,49 +251,28 @@ export default function ProductScreen() {
             )}
           </div>
 
-          <p>
-            <strong className="text-brand-title">Category:</strong>{" "}
-            {product.category}
-          </p>
-
-          {/* Variant Selection */}
+          {/* Variant */}
           <div>
             <h3 className="font-semibold mb-1 text-brand-title">
               Select Variant:
             </h3>
-            {inventory.length === 0 && (
-              <div className="flex gap-2 flex-wrap">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-20 h-8 rounded bg-gradient-to-r from-brand-secondary via-brand-liteGray to-brand-secondary animate-shimmer"
-                  ></div>
-                ))}
-              </div>
-            )}
-
             <div className="flex gap-2 flex-wrap">
               {inventory.map((obj) => {
                 const isSelected =
                   selectedSize === obj.size && selectedColor === obj.color;
                 const isOutOfStock = obj.quantity === 0;
-
                 return (
                   <span
                     key={obj.id}
-                    className={`px-3 py-1 border rounded cursor-pointer transition 
-        ${isSelected ? "bg-brand-primary text-brand-primaryText" : ""}
-        ${
-          !isSelected && !isOutOfStock
-            ? "hover:bg-brand-secondary hover:text-brand-black border-brand-liteGray"
-            : ""
-        }
-        ${
-          isOutOfStock
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300"
-            : ""
-        }
-      `}
+                    className={`px-3 py-1 border rounded cursor-pointer transition ${
+                      isSelected
+                        ? "bg-brand-primary text-brand-primaryText"
+                        : "hover:bg-brand-secondary hover:text-brand-black border-brand-liteGray"
+                    } ${
+                      isOutOfStock
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300"
+                        : ""
+                    }`}
                     onClick={() => {
                       if (!isOutOfStock) {
                         setSelectedSize(obj.size);
@@ -273,36 +288,33 @@ export default function ProductScreen() {
             </div>
           </div>
 
-          {/* Add to Cart Button */}
-          {/* Add to Cart / Out of Stock Button */}
-<div className="mt-4 w-full flex gap-3">
-  {inventory.length > 0 && inventory.every((obj) => obj.quantity === 0) ? (
-    <button
-      disabled
-      className="bg-gray-300 text-gray-600 px-6 py-3 w-full rounded-lg cursor-not-allowed"
-    >
-      Out of Stock
-    </button>
-  ) : (
-    <button
-      onClick={handleAddToCart}
-      disabled={!selectedSize || !selectedColor}
-      className={`px-6 py-3 w-full rounded-lg transition ${
-        !selectedSize || !selectedColor
-          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-          : "bg-brand-primary text-brand-primaryText hover:bg-brand-black"
-      }`}
-    >
-      Add to Cart
-    </button>
-  )}
-</div>
-
+          {/* Add to Cart */}
+          <div className="mt-4 w-full flex gap-3">
+            {inventory.length > 0 &&
+            inventory.every((obj) => obj.quantity === 0) ? (
+              <button
+                disabled
+                className="bg-gray-300 text-gray-600 px-6 py-3 w-full rounded-lg cursor-not-allowed"
+              >
+                Out of Stock
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={!selectedSize || !selectedColor}
+                className={`px-6 py-3 w-full rounded-lg transition ${
+                  !selectedSize || !selectedColor
+                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                    : "bg-brand-primary text-brand-primaryText hover:bg-brand-black"
+                }`}
+              >
+                Add to Cart
+              </button>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Ratings Section */}
-      <div className="mt-10">
+ <div className="mt-10">
         <h2 className="text-xl font-semibold mb-4 text-brand-title">Reviews</h2>
 
         {/* Ratings Summary */}
@@ -420,9 +432,7 @@ export default function ProductScreen() {
           </div>
         </div>
       )}
-
-      {/* Animations (unchanged) */}
-      <style>{/* same as your existing animation styles */}</style>
     </div>
   );
 }
+
