@@ -1,22 +1,29 @@
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import HomeHero from "../components/HomeHero";
 import HomeCategory from "../components/HomeCategory";
 import HomeSection from "../components/HomeSection";
 import ReelSection from "../components/ReelSection";
-import { useState, useEffect } from "react";
+import ReelViewer from "../components/ReelViewer";
 
 export default function HomeScreen() {
-  const { products, loading} = useSelector((state) => state.products);
-  const suits = products.filter((obj) => obj.category == "Suit");
-  const lehenga = products.filter((obj) => obj.category == "Lehenga");
-  const poshak = products.filter((obj) => obj.category == "Poshak");
-  const duppata = products.filter((obj) => obj.category == "Dupatta");
-  const [visibleCount, setVisibleCount] = useState(2)
+  const { products, loading } = useSelector((state) => state.products);
+  const suits = products.filter((obj) => obj.category === "Suit");
+  const lehenga = products.filter((obj) => obj.category === "Lehenga");
+  const poshak = products.filter((obj) => obj.category === "Poshak");
+  const duppata = products.filter((obj) => obj.category === "Dupatta");
   const videoProducts = products.filter((obj) => obj.video);
 
-   useEffect(() => {
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [showReelViewer, setShowReelViewer] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400) {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 400
+      ) {
         setVisibleCount((prev) => Math.min(prev + 5, videoProducts.length));
       }
     };
@@ -28,21 +35,28 @@ export default function HomeScreen() {
     <div className="min-h-screen bg-white">
       <HomeHero />
       <HomeCategory />
-     {videoProducts.length > 0 && (
+
+      {videoProducts.length > 0 && (
         <div
           id="reel-scroll-container"
           className="flex gap-4 overflow-x-auto p-4 scrollbar-hide snap-x snap-mandatory"
         >
-          {videoProducts.map((product) => (
+          {videoProducts.slice(0, visibleCount).map((product, index) => (
             <div key={product._id || product.id} className="snap-center">
               <ReelSection
                 videoUrl={product.video}
                 thumbnailUrl={product.images?.[0]?.image}
+                index={index}
+                onClick={() => {
+                  setSelectedIndex(index);
+                  setShowReelViewer(true);
+                }}
               />
             </div>
           ))}
         </div>
       )}
+
       <HomeSection
         title="Latest Suits"
         items={suits}
@@ -67,6 +81,14 @@ export default function HomeScreen() {
         category="dupatta"
         loading={loading}
       />
+
+      {showReelViewer && (
+        <ReelViewer
+          reels={videoProducts}
+          initialIndex={selectedIndex}
+          onClose={() => setShowReelViewer(false)}
+        />
+      )}
     </div>
   );
 }
