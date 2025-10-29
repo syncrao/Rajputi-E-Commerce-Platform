@@ -30,7 +30,7 @@ export default function ReelSection({ videoUrl, thumbnailUrl }) {
   return (
     <div
       ref={ref}
-      className="w-60 h-70 rounded-2xl overflow-hidden shadow-md flex-shrink-0 bg-black"
+      className="w-24 h-full rounded-2xl overflow-hidden shadow-md flex-shrink-0 bg-black"
     >
       {isVisible ? (
         <ReactPlayer
