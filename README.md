@@ -12,8 +12,8 @@ This project uses **Django REST Framework (Backend)**, **ReactJS (Web Frontend)*
 - Browse Rajputi dress suits and odhna collections
 - Product details with multiple images, price, fabric info
 - Add to Cart & Wishlist
-- Checkout with **Razorpay Payment Gateway**
-- Order history & tracking via **Shiprocket API**
+- Checkout with **Payment Gateway**
+- Order history
 
 ### Admin Side
 - Manage products (add, update, delete)
@@ -48,7 +48,7 @@ This project uses **Django REST Framework (Backend)**, **ReactJS (Web Frontend)*
 - Razorpay React Native SDK  
 
 **Integrations**
-- Razorpay (Payments)  
+- Razorpay, PhonePe (Payments)  
 - Shiprocket API (Shipping & Tracking)  
 
 ---
@@ -68,7 +68,6 @@ rajputi-ecommerce/
 ├── frontend/              # ReactJS web app
 │   ├── src/
 │   │   ├── components/    # Reusable UI components
-│   │   ├── pages/         # Web pages
 │   │   ├── redux/         # State management
 │   │   └── utils/         # Helpers
 │
@@ -79,13 +78,4 @@ rajputi-ecommerce/
 │   └── utils/             # Helpers
 │
 └── README.md              # Main documentation
-
-
-| Endpoint                  | Method | Description       |
-| ------------------------- | ------ | ----------------- |
-| `/api/auth/register/`     | POST   | Register new user |
-| `/api/auth/login/`        | POST   | Login user        |
-| `/api/products/`          | GET    | Get all products  |
-| `/api/orders/`            | POST   | Place an order    |
-| `/api/payments/razorpay/` | POST   | Initiate payment  |
 
