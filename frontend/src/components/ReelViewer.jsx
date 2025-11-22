@@ -22,15 +22,12 @@ export default function ReelViewer({ reels, initialIndex, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black z-50">
-      {/* Close Button */}
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-50 bg-black/50 text-white p-2 rounded-full"
       >
         <X size={24} />
       </button>
-
-      {/* Scroll Container */}
       <div
         ref={containerRef}
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory"

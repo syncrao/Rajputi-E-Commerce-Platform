@@ -39,7 +39,7 @@ export default function HomeScreen() {
       {videoProducts.length > 0 && (
         <div
           id="reel-scroll-container"
-          className="flex gap-4 overflow-x-auto p-4 scrollbar-hide snap-x snap-mandatory"
+          className="flex gap-4 overflow-x-auto p-4 lg:p-8 scrollbar-hide snap-x snap-mandatory"
         >
           {videoProducts.slice(0, visibleCount).map((product, index) => (
             <div key={product._id || product.id} className="snap-center">

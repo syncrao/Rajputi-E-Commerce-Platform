@@ -50,7 +50,7 @@ export default function ReelSection({ videoUrl, thumbnailUrl, index, onClick }) 
           playing={playing}
           loop={true}
           muted
-          controls={false}
+          controls={true}
           width="100%"
           height="100%"
           playsinline
