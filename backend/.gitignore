@@ -46,3 +46,4 @@ pytest_cache/
 # Vercel
 # ✅ Keep .vercel folder so project stays linked
 # .vercel   <-- removed from ignore
+.vercel

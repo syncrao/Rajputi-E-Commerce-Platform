@@ -26,6 +26,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             "category",
             "fabric",
             "images",
+            "video", 
         ]
 
 
